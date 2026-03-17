@@ -7,13 +7,25 @@
         <span class="text-sm font-semibold text-gray-100">Current Sale</span>
         <span v-if="pos.cartCount > 0" class="badge badge-purple text-xs">{{ pos.cartCount }} items</span>
       </div>
-      <button
-        v-if="pos.cartCount > 0"
-        class="text-xs text-gray-500 hover:text-red-400 transition-colors"
-        @click="pos.clearCart()"
-      >
-        Clear all
-      </button>
+      <div class="flex items-center gap-2">
+        <button
+          class="text-xs px-2 py-1 rounded transition-colors"
+          :class="displayOpen
+            ? 'bg-indigo-700/50 text-indigo-300 hover:bg-indigo-700'
+            : 'text-gray-500 hover:text-indigo-300'"
+          title="Display to customer"
+          @click="openDisplay"
+        >
+          {{ displayOpen ? '📺 Live' : '📺' }}
+        </button>
+        <button
+          v-if="pos.cartCount > 0"
+          class="text-xs text-gray-500 hover:text-red-400 transition-colors"
+          @click="pos.clearCart()"
+        >
+          Clear all
+        </button>
+      </div>
     </div>
 
     <!-- Empty state -->
@@ -186,6 +198,42 @@ const { itemImageSrc } = useItemImage()
 
 const paymentMethod = ref<'Cash' | 'QRIS' | 'EDC'>('Cash')
 const currency = computed(() => sessionStore.currency)
+const displayOpen = ref(false)
+
+let displayChannel: BroadcastChannel | null = null
+
+function getChannel(): BroadcastChannel {
+  if (!displayChannel) displayChannel = new BroadcastChannel('vpcomics-display')
+  return displayChannel
+}
+
+function broadcastCart() {
+  if (!displayOpen.value) return
+  getChannel().postMessage({
+    type: 'cart-update',
+    cart: pos.cart,
+    discount: pos.cartDiscount,
+    subtotal: pos.cartSubtotal,
+    total: pos.cartTotal,
+    currency: currency.value,
+    paymentMethod: pos.cart.length > 0 ? paymentMethod.value : '',
+  })
+}
+
+// Broadcast whenever cart, discount, or payment method changes
+watch(
+  [() => pos.cart, () => pos.cartDiscount, () => paymentMethod.value],
+  () => broadcastCart(),
+  { deep: true }
+)
+
+function openDisplay() {
+  if (!import.meta.client) return
+  window.open('/display', 'vpcomics-display', 'width=1024,height=768,menubar=no,toolbar=no,location=no')
+  displayOpen.value = true
+  // Immediately broadcast current state so the new window catches up
+  setTimeout(() => broadcastCart(), 300)
+}
 
 function fmt(n: number): string {
   if (currency.value === 'IDR') return 'Rp' + Math.round(n).toLocaleString('id-ID')
@@ -201,7 +249,22 @@ function parsePrice(s: string): number {
 }
 
 async function completeSale() {
+  const total = pos.cartTotal
+  const change = pos.cartChange
+  const method = paymentMethod.value
   await pos.completeTransaction(paymentMethod.value)
   paymentMethod.value = 'Cash'
+  // Broadcast completion
+  if (displayOpen.value) {
+    getChannel().postMessage({
+      type: 'sale-complete',
+      total,
+      change,
+      paymentMethod: method,
+      currency: currency.value,
+    })
+  }
 }
+
+onUnmounted(() => displayChannel?.close())
 </script>
