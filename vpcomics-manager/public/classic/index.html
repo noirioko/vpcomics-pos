@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPCOMICS Artist Manager</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <img src="/images/yuyu_logo.png" alt="Yuyu Mascot" class="header-logo">
+                <div class="header-text">
+                    <h1>VPCOMICS Artist Manager</h1>
+                    <p>Multi-artist sales tracking with auto-calculated profit sharing</p>
+                </div>
+            </div>
+            <a href="home.html" class="back-home-btn">🏠 Back to Home</a>
+            <div class="session-info" id="sessionInfo" style="display: none;">
+                <div class="session-badge">
+                    <span class="session-label">Current Session:</span>
+                    <span class="session-name" id="sessionName">-</span>
+                    <button class="session-edit-btn" onclick="editSession()" title="Edit Session">✏️</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Artist Tabs - Shows when artists are selected -->
+        <div class="artist-tabs" id="artistTabs" style="display: none;">
+            <div class="tabs-container" id="tabsContainer">
+                <!-- Tabs will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Artist Side Menu -->
+        <div class="artist-menu-overlay" id="artistMenuOverlay" style="display: none;" onclick="closeArtistMenu()">
+            <div class="artist-menu" id="artistMenu" onclick="event.stopPropagation()">
+                <div class="menu-header">
+                    <h3>🎨 All Artists</h3>
+                    <button class="menu-close" onclick="closeArtistMenu()">&times;</button>
+                </div>
+                <div class="menu-content" id="menuContent">
+                    <!-- Menu items will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Menu Button -->
+        <button class="floating-menu-btn" id="floatingMenuBtn" onclick="window.toggleArtistMenu ? toggleArtistMenu() : alert('Menu system is loading...')" title="Open Artist Menu">
+            <span class="floating-icon">☰</span>
+            <span class="floating-label">MENU</span>
+            <div class="floating-badge" id="floatingBadge" style="display: none;"></div>
+        </button>
+        
+        <!-- Session Setup Modal -->
+        <div class="session-modal" id="sessionModal" style="display: none;">
+            <div class="session-modal-content">
+                <h2>🏁 Start New Session</h2>
+                <p>Set up your convention details to begin</p>
+                <div class="session-form">
+                    <input type="text" id="sessionEventName" placeholder="Event Name (e.g., COMIFURO 20)" class="session-input">
+                    <input type="date" id="sessionEventDate" class="session-input">
+                    <input type="text" id="sessionEventLocation" placeholder="Location (e.g., Jakarta, Indonesia)" class="session-input">
+                    <div class="session-currency">
+                        <label>Currency:</label>
+                        <div class="currency-toggle">
+                            <button class="currency-btn active" onclick="setSessionCurrency('IDR')">🇮🇩 Rupiah</button>
+                            <button class="currency-btn" onclick="setSessionCurrency('SGD')">🇸🇬 SGD</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="session-actions">
+                    <button class="session-btn btn-primary" onclick="startSession()">🚀 Start Session</button>
+                    <button class="session-btn btn-secondary" onclick="continueWithoutSession()">Continue Without Session</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="artist-selector">
+            <h2>🎭 Select Artist</h2>
+            <div class="artist-grid" id="artistGrid">
+                <!-- Artists will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="artist-info-bar" id="artistInfoBar" style="display: none;">
+            <div id="artistInfo">
+                <!-- Current artist info will be shown here -->
+            </div>
+        </div>
+        
+        <div class="search-container" id="searchContainer" style="display: none;">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search products... (try typing product codes, names, etc.)" oninput="searchProducts()">
+            <div class="search-icon">🔍</div>
+        </div>
+        
+        <div class="pos-section" id="posSection" style="display: none;">
+            <div class="pos-header">
+                <h2>📱 Point of Sale Interface</h2>
+                <div class="total-display">
+                    <div id="revenueShareLabel" style="font-size: 14px; opacity: 0.9;">Artist Revenue Share</div>
+                    <div id="totalRevenue" style="font-size: 24px; font-weight: bold;">Rp0</div>
+                </div>
+            </div>
+            
+            <div id="itemsContainer">
+                <!-- Items will be populated by JavaScript -->
+            </div>
+            
+            <div class="actions">
+                <button class="action-btn btn-secondary" onclick="backToArtistSelection()">👈 Back to Artists</button>
+                <button class="action-btn btn-warning" onclick="clearAllSales()">🗑️ Clear Sales</button>
+                <button class="action-btn btn-warning" onclick="resetCustomPrices()" style="background: linear-gradient(135deg, #fd7e14 0%, #e55100 100%);">🔄 Reset Prices</button>
+                <button class="action-btn btn-primary" onclick="saveCurrentState()">💾 Save State</button>
+                <button class="action-btn btn-success" onclick="generateReport()">📊 Generate Report</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="reportModal" class="report-modal" style="display: none;">
+        <div class="report-content">
+            <button class="close-btn" onclick="closeReport()">&times;</button>
+            <div id="generatedReport"></div>
+            <div class="export-actions">
+                <button class="export-btn csv" onclick="exportCSV()">📊 Export CSV Data</button>
+                <button class="export-btn pdf" onclick="exportPDF()">📑 Save as PDF</button>
+                <button class="export-btn html" onclick="exportHTML()">💾 Save as HTML</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data/artists.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/artist-management.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/actions.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/export.js"></script>
+</body>
+</html>

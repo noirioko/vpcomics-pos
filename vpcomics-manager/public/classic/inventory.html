@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPCOMICS - Home Inventory</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/inventory.css">
+</head>
+<body class="inventory-page">
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <img src="/images/yuyu_logo.png" alt="Yuyu Mascot" class="header-logo">
+                <div class="header-text">
+                    <h1>🏠 Home Inventory Manager</h1>
+                    <p>Track your collection and never lose items again</p>
+                </div>
+            </div>
+            <a href="home.html" class="back-home-btn">🏠 Back to Home</a>
+        </div>
+        
+        <!-- Location Management Section -->
+        <div class="location-section">
+            <h2>📍 My Storage Locations</h2>
+            <button class="btn-primary" onclick="showAddLocationModal()">➕ Add New Location</button>
+            
+            <div id="locationsGrid" class="locations-grid">
+                <!-- Locations will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Inventory Section -->
+        <div class="inventory-section">
+            <div class="inventory-header">
+                <h2>📦 My Inventory</h2>
+                <div class="inventory-controls">
+                    <input type="text" id="inventorySearch" class="search-box" placeholder="🔍 Search items by name, code, or location...">
+                    <button class="btn-primary" onclick="showAddItemModal()">➕ Add New Item</button>
+                    <button class="btn-primary" onclick="showImportModal()" title="Import from POS">📥 Import from POS</button>
+                    <button class="btn-help" onclick="toggleShortcutsHelp()" title="Keyboard Shortcuts">⌨️</button>
+                </div>
+            </div>
+            
+            <!-- Keyboard Shortcuts Help -->
+            <div class="shortcuts-help" id="shortcutsHelp" style="display: none;">
+                <div class="shortcuts-content">
+                    <h4>⌨️ Keyboard Shortcuts</h4>
+                    <div class="shortcuts-grid">
+                        <div class="shortcut-item">
+                            <kbd>Ctrl/Cmd</kbd> + <kbd>I</kbd>
+                            <span>Add new item</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl/Cmd</kbd> + <kbd>L</kbd>
+                            <span>Add new location</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl/Cmd</kbd> + <kbd>F</kbd>
+                            <span>Focus search</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl/Cmd</kbd> + <kbd>E</kbd>
+                            <span>Export to Excel (CSV)</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>ESC</kbd>
+                            <span>Close modals</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Quick Filters -->
+            <div class="quick-filters" id="quickFilters">
+                <span class="filter-label">Quick filters:</span>
+                <button class="filter-btn active" onclick="filterByArtist('')">🌐 All</button>
+                <!-- Artist filters will be populated by JavaScript -->
+            </div>
+            
+            <div class="inventory-stats" id="inventoryStats">
+                <!-- Stats will be shown here -->
+            </div>
+            
+            <div id="inventoryGrid" class="inventory-grid">
+                <!-- Inventory items will be populated here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Location Modal -->
+    <div id="locationModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeLocationModal()">&times;</span>
+            <h2>📍 Add/Edit Storage Location</h2>
+            
+            <div class="form-group">
+                <label>Location Name:</label>
+                <input type="text" id="locationName" placeholder="e.g., Bedroom Shelf A, Closet Box 1">
+            </div>
+            
+            <div class="form-group">
+                <label>Storage Type:</label>
+                <input type="text" id="storageType" placeholder="e.g., Shelf, Box, Drawer, Folder, Display">
+            </div>
+            
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" id="locationDesc" placeholder="e.g., Top shelf near window">
+            </div>
+            
+            <div class="form-group">
+                <label>Color Code:</label>
+                <input type="color" id="locationColor" value="#4facfe">
+            </div>
+            
+            <button class="btn-success" onclick="saveLocation()">💾 Save Location</button>
+        </div>
+    </div>
+    
+    <!-- Import from POS Modal -->
+    <div id="importModal" class="modal" style="display: none;">
+        <div class="modal-content modal-wide">
+            <span class="close" onclick="closeImportModal()">&times;</span>
+            <h2>📥 Import Items from POS</h2>
+            
+            <div class="import-info">
+                <p>💡 Import product data from your POS system into your home inventory.</p>
+                <p>This will create inventory items with zero quantity - you can update quantities after import.</p>
+            </div>
+            
+            <div class="import-options">
+                <h3>Select Artists to Import:</h3>
+                <div class="artist-checkboxes" id="artistCheckboxes">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                
+                <div class="import-actions">
+                    <label>
+                        <input type="checkbox" id="selectAllArtists" onchange="toggleAllArtists()">
+                        Select All
+                    </label>
+                </div>
+            </div>
+            
+            <div class="import-location">
+                <label>Default Location for Imported Items:</label>
+                <select id="defaultImportLocation">
+                    <!-- Will be populated with locations -->
+                </select>
+            </div>
+            
+            <div class="import-stats" id="importStats">
+                <!-- Will show import preview -->
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-success" onclick="importFromPOS()">💾 Import Selected Items</button>
+                <button class="btn-secondary" onclick="closeImportModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Item Modal -->
+    <div id="itemModal" class="modal" style="display: none;">
+        <div class="modal-content modal-wide">
+            <span class="close" onclick="closeItemModal()">&times;</span>
+            <h2>📦 Add/Edit Inventory Item</h2>
+            
+            <div class="modal-grid">
+                <div class="form-section">
+                    <h3>Item Details</h3>
+                    <div class="form-group">
+                        <label>Product Code:</label>
+                        <input type="text" id="itemCode" placeholder="e.g., GC-HSR-KC-BL1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Item Name:</label>
+                        <input type="text" id="itemName" placeholder="e.g., HSR Blade Keychain">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Artist/Category:</label>
+                        <input type="text" id="itemArtist" placeholder="e.g., GENTLECAT, PESA21">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Notes:</label>
+                        <textarea id="itemNotes" placeholder="Any special notes about this item..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Location & Quantity</h3>
+                    <div id="itemLocations" class="item-locations">
+                        <!-- Location entries will be added here -->
+                    </div>
+                    <button class="btn-secondary" onclick="addLocationEntry()">➕ Add Another Location</button>
+                    
+                    <div class="total-display">
+                        <strong>Total Quantity:</strong> <span id="totalQuantity">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-success" onclick="saveItem()">💾 Save Item</button>
+                <button class="btn-secondary" onclick="closeItemModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core inventory data -->
+    <script src="data/artists.js"></script>
+    <!-- Inventory specific scripts -->
+    <script src="js/inventory-core.js"></script>
+    <script src="js/inventory-locations.js"></script>
+    <script src="js/inventory-items.js"></script>
+    <script src="js/inventory-import.js"></script>
+    <script src="js/inventory-ui.js"></script>
+    <!-- Initialize inventory system -->
+    <script src="js/inventory-init.js"></script>
+</body>
+</html>

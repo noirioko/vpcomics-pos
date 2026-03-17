@@ -75,6 +75,18 @@
         </div>
       </div>
     </div>
+
+    <!-- Classic version link -->
+    <div class="mt-12 text-center">
+      <a
+        href="/classic/home.html"
+        class="inline-flex items-center gap-2 text-xs text-gray-600 hover:text-gray-400 transition-colors"
+      >
+        <span>🕰️</span>
+        <span>Classic version (vanilla JS)</span>
+        <span>→</span>
+      </a>
+    </div>
   </div>
 </template>
 
