@@ -9,16 +9,6 @@
       </div>
       <div class="flex items-center gap-2">
         <button
-          class="text-xs px-2 py-1 rounded transition-colors"
-          :class="displayOpen
-            ? 'bg-indigo-700/50 text-indigo-300 hover:bg-indigo-700'
-            : 'text-gray-500 hover:text-indigo-300'"
-          title="Display to customer"
-          @click="openDisplay"
-        >
-          {{ displayOpen ? '📺 Live' : '📺' }}
-        </button>
-        <button
           v-if="pos.cartCount > 0"
           class="text-xs text-gray-500 hover:text-red-400 transition-colors"
           @click="pos.clearCart()"
@@ -176,6 +166,18 @@
             </span>
           </div>
         </template>
+
+        <!-- Display to customer -->
+        <button
+          class="w-full text-sm py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+          :class="displayOpen
+            ? 'bg-indigo-700/40 text-indigo-300 ring-1 ring-indigo-600 hover:bg-indigo-700/60'
+            : 'bg-gray-800 text-gray-400 hover:text-indigo-300 hover:bg-gray-700'"
+          @click="openDisplay"
+        >
+          <span>📺</span>
+          <span>{{ displayOpen ? 'Customer Display — Live' : 'Display to Customer' }}</span>
+        </button>
 
         <!-- Complete button -->
         <button
