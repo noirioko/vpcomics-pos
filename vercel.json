@@ -1,3 +1,5 @@
 {
-  "rootDirectory": "vpcomics-manager"
+  "buildCommand": "cd vpcomics-manager && npm ci && NITRO_PRESET=static npm run generate",
+  "outputDirectory": "vpcomics-manager/.output/public",
+  "framework": null
 }
