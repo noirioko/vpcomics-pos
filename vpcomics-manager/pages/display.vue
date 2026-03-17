@@ -108,6 +108,8 @@ function fmt(n: number): string {
 onMounted(() => {
   if (!import.meta.client) return
   const ch = new BroadcastChannel('vpcomics-display')
+  // Tell the POS panel we're ready to receive
+  ch.postMessage({ type: 'display-ready' })
   ch.onmessage = (e) => {
     const msg = e.data
     if (msg.type === 'cart-update') {

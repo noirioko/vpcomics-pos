@@ -205,9 +205,21 @@ const displayOpen = ref(false)
 let displayChannel: BroadcastChannel | null = null
 
 function getChannel(): BroadcastChannel {
-  if (!displayChannel) displayChannel = new BroadcastChannel('vpcomics-display')
+  if (!displayChannel) {
+    displayChannel = new BroadcastChannel('vpcomics-display')
+    // When the display window finishes loading it sends 'display-ready' — reply with current cart
+    displayChannel.onmessage = (e) => {
+      if (e.data.type === 'display-ready') {
+        displayOpen.value = true
+        broadcastCart()
+      }
+    }
+  }
   return displayChannel
 }
+
+// Eagerly open the channel so we catch 'display-ready' even before the button is clicked
+onMounted(() => { if (import.meta.client) getChannel() })
 
 function broadcastCart() {
   if (!displayOpen.value) return
@@ -232,9 +244,7 @@ watch(
 function openDisplay() {
   if (!import.meta.client) return
   window.open('/display', 'vpcomics-display', 'width=1024,height=768,menubar=no,toolbar=no,location=no')
-  displayOpen.value = true
-  // Immediately broadcast current state so the new window catches up
-  setTimeout(() => broadcastCart(), 300)
+  // displayOpen + broadcast happen when the display page responds with 'display-ready'
 }
 
 function fmt(n: number): string {
