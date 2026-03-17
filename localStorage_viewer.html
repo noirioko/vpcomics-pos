@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPCOMICS LocalStorage Viewer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .section h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .data-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .key {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+        .value {
+            font-family: 'Courier New', monospace;
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            word-break: break-all;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .summary {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .artist-summary {
+            display: inline-block;
+            background: white;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 20px;
+            border: 2px solid #667eea;
+            font-weight: bold;
+        }
+        .no-data {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        .clear-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .clear-btn:hover {
+            background: #c82333;
+        }
+        .refresh-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .refresh-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 VPCOMICS LocalStorage Data Viewer</h1>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
+            <button class="clear-btn" onclick="clearAllData()">🗑️ Clear All Data</button>
+            <button class="refresh-btn" onclick="exportData()">📋 Export All Data</button>
+        </div>
+        
+        <div id="summary" class="summary"></div>
+        
+        <div class="section">
+            <h2>🎨 Artist States & Settings</h2>
+            <div id="artistStates"></div>
+        </div>
+        
+        <div class="section">
+            <h2>💰 Sales Data</h2>
+            <div id="salesData"></div>
+        </div>
+        
+        <div class="section">
+            <h2>🏷️ Custom Prices & Settings</h2>
+            <div id="customData"></div>
+        </div>
+        
+        <div class="section">
+            <h2>📦 All LocalStorage Keys</h2>
+            <div id="allKeys"></div>
+        </div>
+    </div>
+
+    <script>
+        function loadData() {
+            const summary = document.getElementById('summary');
+            const artistStates = document.getElementById('artistStates');
+            const salesData = document.getElementById('salesData');
+            const customData = document.getElementById('customData');
+            const allKeys = document.getElementById('allKeys');
+            
+            // Clear containers
+            [summary, artistStates, salesData, customData, allKeys].forEach(el => el.innerHTML = '');
+            
+            // Get all localStorage keys
+            const allStorageKeys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                allStorageKeys.push(localStorage.key(i));
+            }
+            
+            // Filter VPCOMICS keys
+            const vpcomicsKeys = allStorageKeys.filter(key => key.includes('vpcomics'));
+            
+            // Summary
+            summary.innerHTML = `
+                <h3>📊 Data Summary</h3>
+                <p><strong>Total localStorage Keys:</strong> ${allStorageKeys.length}</p>
+                <p><strong>VPCOMICS Keys:</strong> ${vpcomicsKeys.length}</p>
+                <p><strong>Found Data Types:</strong></p>
+                <div>
+                    ${vpcomicsKeys.map(key => {
+                        if (key.includes('_state')) return '<span class="artist-summary">🎨 Artist State</span>';
+                        if (key.includes('_sales')) return '<span class="artist-summary">💰 Sales Data</span>';
+                        if (key.includes('_prices')) return '<span class="artist-summary">🏷️ Custom Prices</span>';
+                        if (key.includes('_costs')) return '<span class="artist-summary">💳 Custom Costs</span>';
+                        if (key.includes('_availability')) return '<span class="artist-summary">📦 Availability</span>';
+                        return '<span class="artist-summary">❓ Other</span>';
+                    }).join('')}
+                </div>
+            `;
+            
+            // Artist States
+            const stateKeys = vpcomicsKeys.filter(key => key.includes('_state'));
+            if (stateKeys.length > 0) {
+                artistStates.innerHTML = stateKeys.map(key => {
+                    const data = localStorage.getItem(key);
+                    return `
+                        <div class="data-item">
+                            <div class="key">${key}</div>
+                            <div class="value">${data ? JSON.stringify(JSON.parse(data), null, 2) : 'null'}</div>
+                            <button class="clear-btn" onclick="clearKey('${key}')">Delete This</button>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                artistStates.innerHTML = '<div class="no-data">No artist state data found</div>';
+            }
+            
+            // Sales Data
+            const salesKeys = vpcomicsKeys.filter(key => key.includes('_sales'));
+            if (salesKeys.length > 0) {
+                salesData.innerHTML = salesKeys.map(key => {
+                    const data = localStorage.getItem(key);
+                    let parsedData = {};
+                    try {
+                        parsedData = JSON.parse(data);
+                    } catch (e) {
+                        parsedData = { error: 'Failed to parse JSON', raw: data };
+                    }
+                    
+                    return `
+                        <div class="data-item">
+                            <div class="key">${key}</div>
+                            <div class="value">${JSON.stringify(parsedData, null, 2)}</div>
+                            <button class="clear-btn" onclick="clearKey('${key}')">Delete This</button>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                salesData.innerHTML = '<div class="no-data">No sales data found</div>';
+            }
+            
+            // Custom Data
+            const customKeys = vpcomicsKeys.filter(key => 
+                key.includes('_prices') || key.includes('_costs') || 
+                key.includes('_availability') || key.includes('_notes') || 
+                key.includes('_titles')
+            );
+            if (customKeys.length > 0) {
+                customData.innerHTML = customKeys.map(key => {
+                    const data = localStorage.getItem(key);
+                    let parsedData = {};
+                    try {
+                        parsedData = JSON.parse(data);
+                    } catch (e) {
+                        parsedData = { error: 'Failed to parse JSON', raw: data };
+                    }
+                    
+                    return `
+                        <div class="data-item">
+                            <div class="key">${key}</div>
+                            <div class="value">${JSON.stringify(parsedData, null, 2)}</div>
+                            <button class="clear-btn" onclick="clearKey('${key}')">Delete This</button>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                customData.innerHTML = '<div class="no-data">No custom data found</div>';
+            }
+            
+            // All Keys
+            if (allStorageKeys.length > 0) {
+                allKeys.innerHTML = allStorageKeys.map(key => {
+                    const isVPCOMICS = key.includes('vpcomics');
+                    return `
+                        <div class="data-item" style="${isVPCOMICS ? 'border-left: 4px solid #28a745;' : ''}">
+                            <div class="key">${key} ${isVPCOMICS ? '(VPCOMICS)' : ''}</div>
+                            <div class="value" style="max-height: 100px;">${localStorage.getItem(key)?.substring(0, 200)}${localStorage.getItem(key)?.length > 200 ? '...' : ''}</div>
+                            <button class="clear-btn" onclick="clearKey('${key}')">Delete This</button>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                allKeys.innerHTML = '<div class="no-data">No localStorage data found</div>';
+            }
+        }
+        
+        function clearKey(key) {
+            if (confirm(`Are you sure you want to delete the key: ${key}?`)) {
+                localStorage.removeItem(key);
+                alert(`Deleted: ${key}`);
+                loadData(); // Refresh
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm('⚠️ Are you sure you want to clear ALL localStorage data? This cannot be undone!')) {
+                if (confirm('🚨 FINAL WARNING: This will delete ALL stored data including sales, settings, and artist states. Continue?')) {
+                    localStorage.clear();
+                    alert('All localStorage data has been cleared!');
+                    loadData(); // Refresh
+                }
+            }
+        }
+        
+        function exportData() {
+            const allData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.includes('vpcomics')) {
+                    try {
+                        allData[key] = JSON.parse(localStorage.getItem(key));
+                    } catch (e) {
+                        allData[key] = localStorage.getItem(key);
+                    }
+                }
+            }
+            
+            const dataStr = JSON.stringify(allData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'vpcomics_localStorage_backup.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>

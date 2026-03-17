@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inventory System Debug</h1>
+    
+    <div class="section">
+        <h2>Current Status</h2>
+        <div id="status"></div>
+    </div>
+    
+    <div class="section">
+        <h2>Actions</h2>
+        <button onclick="checkData()">Check Data</button>
+        <button onclick="clearInventory()">Clear Inventory</button>
+        <button onclick="importAll()">Import All POS Items</button>
+        <button onclick="window.location.href='inventory.html'">Go to Inventory</button>
+    </div>
+    
+    <div class="section">
+        <h2>Console Output</h2>
+        <pre id="console"></pre>
+    </div>
+
+    <script src="data/artists.js"></script>
+    <script>
+        function log(message, type = 'info') {
+            const consoleDiv = document.getElementById('console');
+            const time = new Date().toLocaleTimeString();
+            consoleDiv.innerHTML += `<span class="${type}">[${time}] ${message}</span>\n`;
+            console.log(message);
+        }
+        
+        function checkData() {
+            log('Checking data...', 'info');
+            
+            // Check if artists data is loaded
+            if (typeof artistsDatabase !== 'undefined') {
+                const artistCount = Object.keys(artistsDatabase).length;
+                log(`✓ Artists data loaded: ${artistCount} artists found`, 'success');
+                
+                let totalProducts = 0;
+                Object.keys(artistsDatabase).forEach(artist => {
+                    if (artistsDatabase[artist].products) {
+                        // Count products in all categories
+                        Object.values(artistsDatabase[artist].products).forEach(category => {
+                            if (Array.isArray(category)) {
+                                totalProducts += category.length;
+                            }
+                        });
+                    }
+                });
+                log(`✓ Total products in POS: ${totalProducts}`, 'success');
+            } else {
+                log('✗ Artists data not found!', 'error');
+            }
+            
+            // Check inventory data
+            const inventoryData = localStorage.getItem('vpcomics_inventory');
+            if (inventoryData) {
+                const inventory = JSON.parse(inventoryData);
+                log(`✓ Inventory data found: ${inventory.items?.length || 0} items`, 'success');
+            } else {
+                log('✓ No inventory data yet (ready for import)', 'info');
+            }
+            
+            // Check locations data
+            const locationsData = localStorage.getItem('vpcomics_locations');
+            if (locationsData) {
+                const locations = JSON.parse(locationsData);
+                log(`✓ Locations data found: ${locations.locations?.length || 0} locations`, 'success');
+            } else {
+                log('✓ No locations data yet', 'info');
+            }
+            
+            updateStatus();
+        }
+        
+        function updateStatus() {
+            const statusDiv = document.getElementById('status');
+            const inventoryData = localStorage.getItem('vpcomics_inventory');
+            const inventory = inventoryData ? JSON.parse(inventoryData) : { items: [] };
+            
+            let html = '<ul>';
+            html += `<li>Inventory Items: <strong>${inventory.items?.length || 0}</strong></li>`;
+            
+            if (typeof artistsDatabase !== 'undefined') {
+                html += `<li>Artists Available: <strong>${Object.keys(artistsDatabase).length}</strong></li>`;
+                
+                let totalProducts = 0;
+                Object.keys(artistsDatabase).forEach(artist => {
+                    if (artistsDatabase[artist].products) {
+                        // Count products in all categories
+                        Object.values(artistsDatabase[artist].products).forEach(category => {
+                            if (Array.isArray(category)) {
+                                totalProducts += category.length;
+                            }
+                        });
+                    }
+                });
+                html += `<li>Total POS Products: <strong>${totalProducts}</strong></li>`;
+            }
+            
+            html += '</ul>';
+            statusDiv.innerHTML = html;
+        }
+        
+        function clearInventory() {
+            if (confirm('This will clear all inventory items. Continue?')) {
+                localStorage.removeItem('vpcomics_inventory');
+                log('✓ Inventory cleared', 'success');
+                updateStatus();
+            }
+        }
+        
+        function importAll() {
+            log('Starting import...', 'info');
+            
+            if (typeof artistsDatabase === 'undefined') {
+                log('✗ Artists data not loaded!', 'error');
+                return;
+            }
+            
+            // Initialize inventory
+            let inventory = { items: [], lastUpdated: new Date().toISOString() };
+            const existingData = localStorage.getItem('vpcomics_inventory');
+            if (existingData) {
+                inventory = JSON.parse(existingData);
+            }
+            
+            // Initialize locations if needed
+            let locations = localStorage.getItem('vpcomics_locations');
+            if (!locations) {
+                const defaultLocations = {
+                    locations: [
+                        { id: 'loc_1', name: 'Convention Box A', type: 'Box', description: 'Large plastic box for conventions', color: '#FF6B6B', active: true },
+                        { id: 'loc_2', name: 'Display Shelf', type: 'Shelf', description: 'Main display area', color: '#4ECDC4', active: true },
+                        { id: 'loc_3', name: 'Storage Drawer 1', type: 'Drawer', description: 'Small items and accessories', color: '#45B7D1', active: true }
+                    ],
+                    lastUpdated: new Date().toISOString()
+                };
+                localStorage.setItem('vpcomics_locations', JSON.stringify(defaultLocations));
+                log('✓ Created default locations', 'success');
+            }
+            
+            let imported = 0;
+            let skipped = 0;
+            
+            Object.keys(artistsDatabase).forEach(artistKey => {
+                if (artistsDatabase[artistKey] && artistsDatabase[artistKey].products) {
+                    // Iterate through all product categories
+                    Object.values(artistsDatabase[artistKey].products).forEach(category => {
+                        if (Array.isArray(category)) {
+                            category.forEach(product => {
+                        // Check if already exists
+                        const exists = inventory.items.find(item => 
+                            item.code === product.code || 
+                            (item.name === product.name && item.artist === artistKey)
+                        );
+                        
+                        if (!exists) {
+                            const itemData = {
+                                id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                                code: product.code || '',
+                                name: product.name,
+                                artist: artistKey,
+                                notes: product.description || product.variations || '',
+                                locations: [{
+                                    locationId: 'loc_1',
+                                    locationName: 'Convention Box A',
+                                    quantity: 0
+                                }],
+                                createdAt: new Date().toISOString(),
+                                updatedAt: new Date().toISOString()
+                            };
+                            
+                            inventory.items.push(itemData);
+                                    imported++;
+                                    } else {
+                                    skipped++;
+                                    }
+                                    });
+                                    }
+                                    });
+                }
+            });
+            
+            // Save inventory
+            localStorage.setItem('vpcomics_inventory', JSON.stringify(inventory));
+            
+            log(`✓ Import complete!`, 'success');
+            log(`  - Imported: ${imported} items`, 'success');
+            log(`  - Skipped: ${skipped} items (already existed)`, 'info');
+            
+            updateStatus();
+        }
+        
+        // Check on load
+        window.onload = function() {
+            checkData();
+        };
+    </script>
+</body>
+</html>

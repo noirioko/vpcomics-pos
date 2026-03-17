@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMIFURO 19 Sales Report v3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .corrections {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .corrections h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .profit-impact {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .profit-impact h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #4a5568;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 12px;
+        }
+        tr:hover {
+            background-color: #f7fafc;
+        }
+        .corrected {
+            background-color: #e8f5e8 !important;
+            font-weight: bold;
+        }
+        .total-row {
+            background-color: #edf2f7;
+            font-weight: bold;
+        }
+        .currency {
+            text-align: right;
+        }
+        .footer {
+            margin-top: 20px;
+            padding: 15px;
+            background: #2d3748;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .no-sales {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 COMIFURO 19 SALES REPORT v3</h1>
+        <p>Convention Date: November 10-11, 2024</p>
+        <p>Currency: Indonesian Rupiah (Rp)</p>
+    </div>
+    
+    <div class="corrections">
+        <h3>🔧 CORRECTIONS IN v3:</h3>
+        <ul>
+            <li><strong>P21-ORV-PT-B5-01:</strong> Cost corrected from Rp37,000 to Rp10,000</li>
+            <li><strong>P21-ORV-PT-B5-02:</strong> Cost corrected from Rp37,000 to Rp10,000</li>
+            <li><strong>P21-ORV-PT-B5-03:</strong> Cost corrected from Rp37,000 to Rp10,000</li>
+            <li><strong>P21-ORV-PCD-OLD x3:</strong> Cost corrected from Rp5,300 to Rp13,500</li>
+            <li><strong>Logic:</strong> 3 postcards = 3 × Rp4,500 = Rp13,500 total cost</li>
+        </ul>
+    </div>
+
+    <div class="profit-impact">
+        <h3>💰 REVENUE IMPACT:</h3>
+        <ul>
+            <li><strong>B5 prints cost reduction:</strong> Rp216,000</li>
+            <li><strong>x3 set cost increase:</strong> -Rp40,500</li>
+            <li><strong>Net cost reduction:</strong> Rp175,500</li>
+            <li><strong>Artist revenue increase:</strong> Rp87,750</li>
+        </ul>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODUCT CODE</th>
+                <th>ITEM NAME</th>
+                <th>PRICE</th>
+                <th>SALES</th>
+                <th>GROSS PROFIT</th>
+                <th>UNIT COST</th>
+                <th>TOTAL COST</th>
+                <th>NET PROFIT</th>
+                <th>REVENUE SHARING<br>50% (NET / 2)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>P21-ORV-PCD-NEW</td>
+                <td>ORV 02 Postcards (All types, single)</td>
+                <td class="currency">Rp30,000</td>
+                <td class="currency">15</td>
+                <td class="currency">Rp450,000</td>
+                <td class="currency">Rp4,500</td>
+                <td class="currency">Rp67,500</td>
+                <td class="currency">Rp382,500</td>
+                <td class="currency">Rp191,250</td>
+            </tr>
+            <tr>
+                <td>P21-ORV-PCD-OLD</td>
+                <td>ORV Postcards (All types, single)</td>
+                <td class="currency">Rp15,000</td>
+                <td class="currency">18</td>
+                <td class="currency">Rp270,000</td>
+                <td class="currency">Rp4,500</td>
+                <td class="currency">Rp81,000</td>
+                <td class="currency">Rp189,000</td>
+                <td class="currency">Rp94,500</td>
+            </tr>
+            <tr>
+                <td>P21-HQ-PCD</td>
+                <td>Haikyuu Postcards (All types, single)</td>
+                <td class="currency">Rp10,000</td>
+                <td class="currency">3</td>
+                <td class="currency">Rp30,000</td>
+                <td class="currency">Rp4,500</td>
+                <td class="currency">Rp13,500</td>
+                <td class="currency">Rp16,500</td>
+                <td class="currency">Rp8,250</td>
+            </tr>
+            <tr>
+                <td>P21-HQ-PCD-SET</td>
+                <td>Haikyuu Postcards (Set)</td>
+                <td class="currency">Rp120,000</td>
+                <td class="currency">1</td>
+                <td class="currency">Rp120,000</td>
+                <td class="currency">Rp45,000</td>
+                <td class="currency">Rp45,000</td>
+                <td class="currency">Rp75,000</td>
+                <td class="currency">Rp37,500</td>
+            </tr>
+            <tr>
+                <td>P21-BNHA-PCD</td>
+                <td>BNHA Postcards (Singles)</td>
+                <td class="currency">Rp10,000</td>
+                <td class="currency">29</td>
+                <td class="currency">Rp290,000</td>
+                <td class="currency">Rp4,500</td>
+                <td class="currency">Rp130,500</td>
+                <td class="currency">Rp159,500</td>
+                <td class="currency">Rp79,750</td>
+            </tr>
+            <tr class="corrected">
+                <td>P21-ORV-PCD-OLD</td>
+                <td>Postcards (All types, single) x3 (set)</td>
+                <td class="currency">Rp60,000</td>
+                <td class="currency">5</td>
+                <td class="currency">Rp300,000</td>
+                <td class="currency">Rp13,500</td>
+                <td class="currency">Rp67,500</td>
+                <td class="currency">Rp232,500</td>
+                <td class="currency">Rp116,250</td>
+            </tr>
+            <tr class="no-sales">
+                <td>P21-ORV-PCD-SET-01-REG</td>
+                <td>ORV Postcard Set 01 REG</td>
+                <td class="currency">Rp100,000</td>
+                <td class="currency">0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp31,500</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+            </tr>
+            <tr class="no-sales">
+                <td>P21-ORV-PCD-SET-01-LE</td>
+                <td>ORV Postcard Set 01 LE</td>
+                <td class="currency">Rp150,000</td>
+                <td class="currency">0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp31,500</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+            </tr>
+            <tr>
+                <td>P21-ORV-PCD-SET-02-REG</td>
+                <td>ORV Postcard set 02 REG</td>
+                <td class="currency">Rp200,000</td>
+                <td class="currency">1</td>
+                <td class="currency">Rp200,000</td>
+                <td class="currency">Rp40,500</td>
+                <td class="currency">Rp40,500</td>
+                <td class="currency">Rp159,500</td>
+                <td class="currency">Rp79,750</td>
+            </tr>
+            <tr>
+                <td>P21-ORV-PCD-SET-02-LE</td>
+                <td>ORV Postcard set 02 LE</td>
+                <td class="currency">Rp250,000</td>
+                <td class="currency">1</td>
+                <td class="currency">Rp250,000</td>
+                <td class="currency">Rp42,500</td>
+                <td class="currency">Rp42,500</td>
+                <td class="currency">Rp207,500</td>
+                <td class="currency">Rp103,750</td>
+            </tr>
+            <tr class="no-sales">
+                <td>P21-ORV-POL-CP</td>
+                <td>ORV Polaroid New CP (Singles)</td>
+                <td class="currency">Rp20,000</td>
+                <td class="currency">0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp4,500</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+            </tr>
+            <tr class="no-sales">
+                <td>P21-ORV-POL-TW</td>
+                <td>ORV Polaroid (TW Version)</td>
+                <td class="currency">Rp10,000</td>
+                <td class="currency">0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp9,250</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+            </tr>
+            <tr>
+                <td>P21-ORV-POL-SET-01-REG</td>
+                <td>ORV Polaroid set Regular</td>
+                <td class="currency">Rp60,000</td>
+                <td class="currency">1</td>
+                <td class="currency">Rp60,000</td>
+                <td class="currency">Rp37,000</td>
+                <td class="currency">Rp37,000</td>
+                <td class="currency">Rp23,000</td>
+                <td class="currency">Rp11,500</td>
+            </tr>
+            <tr class="no-sales">
+                <td>P21-ORV-POL-SET-01-HOLO</td>
+                <td>ORV Polaroid Hologram</td>
+                <td class="currency">Rp100,000</td>
+                <td class="currency">0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp60,000</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+            </tr>
+            <tr class="corrected">
+                <td>P21-ORV-PT-B5-01</td>
+                <td>ORV Prints B5 - Sky Couple</td>
+                <td class="currency">Rp50,000</td>
+                <td class="currency">3</td>
+                <td class="currency">Rp150,000</td>
+                <td class="currency">Rp10,000</td>
+                <td class="currency">Rp30,000</td>
+                <td class="currency">Rp120,000</td>
+                <td class="currency">Rp60,000</td>
+            </tr>
+            <tr class="corrected">
+                <td>P21-ORV-PT-B5-02</td>
+                <td>ORV Prints B5 - KDJ Garden</td>
+                <td class="currency">Rp50,000</td>
+                <td class="currency">3</td>
+                <td class="currency">Rp150,000</td>
+                <td class="currency">Rp10,000</td>
+                <td class="currency">Rp30,000</td>
+                <td class="currency">Rp120,000</td>
+                <td class="currency">Rp60,000</td>
+            </tr>
+            <tr class="corrected">
+                <td>P21-ORV-PT-B5-03</td>
+                <td>ORV Prints B5 - YJH Black</td>
+                <td class="currency">Rp50,000</td>
+                <td class="currency">2</td>
+                <td class="currency">Rp100,000</td>
+                <td class="currency">Rp10,000</td>
+                <td class="currency">Rp20,000</td>
+                <td class="currency">Rp80,000</td>
+                <td class="currency">Rp40,000</td>
+            </tr>
+            <tr>
+                <td>P21-ORV-PT-B5-04</td>
+                <td>ORV Prints B5 - YJH Flower</td>
+                <td class="currency">Rp50,000</td>
+                <td class="currency">1</td>
+                <td class="currency">Rp50,000</td>
+                <td class="currency">Rp10,000</td>
+                <td class="currency">Rp10,000</td>
+                <td class="currency">Rp40,000</td>
+                <td class="currency">Rp20,000</td>
+            </tr>
+            <tr class="no-sales">
+                <td>P21-BK-SK-01-REG</td>
+                <td>Sketchlog 01 (REGULAR)</td>
+                <td class="currency">Rp200,000</td>
+                <td class="currency">0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp37,000</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+                <td class="currency">Rp0</td>
+            </tr>
+            <tr>
+                <td>P21-BK-SK-01-LE</td>
+                <td>Sketchlog 01 (LIMITED)</td>
+                <td class="currency">Rp250,000</td>
+                <td class="currency">3</td>
+                <td class="currency">Rp750,000</td>
+                <td class="currency">Rp98,000</td>
+                <td class="currency">Rp294,000</td>
+                <td class="currency">Rp456,000</td>
+                <td class="currency">Rp228,000</td>
+            </tr>
+            <tr>
+                <td>P21-ORV-ST-01-HOLO</td>
+                <td>KDJ Standee hologram</td>
+                <td class="currency">Rp175,000</td>
+                <td class="currency">3</td>
+                <td class="currency">Rp525,000</td>
+                <td class="currency">Rp89,100</td>
+                <td class="currency">Rp267,300</td>
+                <td class="currency">Rp257,700</td>
+                <td class="currency">Rp128,850</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="8" style="text-align: right; font-weight: bold;">Sub Total (v3):</td>
+                <td class="currency" style="font-weight: bold;">Rp1,259,600</td>
+            </tr>
+            <tr>
+                <td colspan="8" style="text-align: right; color: #28a745; font-weight: bold;">Previous Total:</td>
+                <td class="currency" style="color: #28a745; font-weight: bold;">Rp1,171,850</td>
+            </tr>
+            <tr>
+                <td colspan="8" style="text-align: right; color: #dc3545; font-weight: bold;">Artist Payment Change:</td>
+                <td class="currency" style="color: #dc3545; font-weight: bold;">+Rp87,750</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="8" style="text-align: right; font-weight: bold;">STATUS:</td>
+                <td class="currency" style="font-weight: bold;">PAID (NEEDS ADJUSTMENT)</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="footer">
+        <p><strong>⚠️ PAYMENT ADJUSTMENT:</strong> Artist underpaid by Rp87,750 due to cost corrections!</p>
+        <p><strong>v3 Revenue Sharing:</strong> Rp1,259,600 (was Rp1,171,850)</p>
+        <p>Status: PAID - REQUIRES ADDITIONAL PAYMENT ⚠️</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Untitled Event - KOUWARRA Sales Report</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                    background-color: #f5f5f5;
+                }
+                .header {
+                    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                    text-align: center;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background: white;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                }
+                th {
+                    background-color: #4a5568;
+                    color: white;
+                    padding: 12px;
+                    text-align: left;
+                    font-weight: bold;
+                    font-size: 11px;
+                }
+                td {
+                    padding: 10px 12px;
+                    border-bottom: 1px solid #e2e8f0;
+                    font-size: 12px;
+                }
+                tr:hover {
+                    background-color: #f7fafc;
+                }
+                .total-row {
+                    background-color: #edf2f7;
+                    font-weight: bold;
+                }
+                .currency {
+                    text-align: right;
+                }
+                .footer {
+                    margin-top: 20px;
+                    padding: 15px;
+                    background: #2d3748;
+                    color: white;
+                    border-radius: 8px;
+                    text-align: center;
+                }
+                .no-sales {
+                    opacity: 0.6;
+                }
+                .sold-out-item {
+                    background-color: #fff3cd;
+                }
+                .not-brought-item {
+                    background-color: #f8d7da;
+                }
+                .print-btn {
+                    background: #28a745;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    margin: 10px;
+                }
+                @media print {
+                    .print-btn { display: none; }
+                    body { margin: 0; background: white; }
+                }
+            </style>
+        </head>
+        <body>
+            <button class="print-btn" onclick="window.print()">🖨️ Print Report</button>
+            
+            <div class="header">
+                <h1>📊 Untitled Event - KOUWARRA 🌸</h1>
+                <p>Event Date: 2025-05-23</p>
+                <p>Location: Location TBD</p>
+                <p>Currency: Indonesian Rupiah (Rp)</p>
+                <p>Revenue Share: 100%</p>
+                <p>Generated: 5/24/2025, 1:43:36 PM</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>PRODUCT CODE</th>
+                        <th>ITEM NAME</th>
+                        <th>PRICE</th>
+                        <th>SALES</th>
+                        <th>GROSS PROFIT</th>
+                        <th>UNIT COST</th>
+                        <th>TOTAL COST</th>
+                        <th>NET PROFIT</th>
+                        <th>ARTIST SHARE<br>100%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                <tr class="">
+                    <td>KW-ORV-STN-OMA</td>
+                    <td>ORV Standee Omamori</td>
+                    <td class="currency">Rp50.000</td>
+                    <td class="currency">3</td>
+                    <td class="currency">Rp150.000</td>
+                    <td class="currency">Rp0</td>
+                    <td class="currency">Rp0</td>
+                    <td class="currency">Rp150.000</td>
+                    <td class="currency">Rp150.000</td>
+                </tr>
+            
+                <tr class="no-sales">
+                    <td>KW-ORV-KC-OMA</td>
+                    <td>ORV Keychain Omamori</td>
+                    <td class="currency">Rp40.000</td>
+                    <td class="currency">0</td>
+                    <td class="currency">Rp0</td>
+                    <td class="currency">Rp14.000</td>
+                    <td class="currency">Rp0</td>
+                    <td class="currency">Rp0</td>
+                    <td class="currency">Rp0</td>
+                </tr>
+            
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="8" style="text-align: right; font-weight: bold;">Sub Total:</td>
+                        <td class="currency" style="font-weight: bold;">Rp150.000</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="8" style="text-align: right; font-weight: bold;">STATUS:</td>
+                        <td class="currency" style="font-weight: bold;">PROCESSING</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="footer">
+                <p><strong>Artist Revenue Share (100%):</strong> Rp150.000</p>
+                <p>Report generated by VPCOMICS Artist Manager ✨</p>
+                <p>Status: Ready for Payment Processing 💰</p>
+            </div>
+        </body>
+        </html>
+    

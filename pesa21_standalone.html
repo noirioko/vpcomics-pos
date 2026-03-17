@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesa21 Interactive POS & Report Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .event-setup {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .setup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        
+        .input-group input, .input-group select {
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .currency-toggle {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .currency-btn {
+            padding: 8px 16px;
+            border: 2px solid #007bff;
+            background: white;
+            color: #007bff;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .currency-btn.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .search-container {
+            margin: 20px;
+            position: relative;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 3px solid #007bff;
+            border-radius: 25px;
+            font-size: 16px;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #007bff;
+            font-size: 20px;
+        }
+        
+        .pos-section {
+            padding: 20px;
+        }
+        
+        .pos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .total-display {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .item-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .item-card:hover {
+            border-color: #007bff;
+            transform: translateY(-2px);
+        }
+        
+        .item-card.has-sales {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .item-card.search-highlight {
+            border-color: #007bff !important;
+            background: #e3f2fd !important;
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,123,255,0.3) !important;
+        }
+        
+        .item-card.search-hidden {
+            display: none;
+        }
+        
+        .item-header {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .item-image {
+            width: 100%;
+            height: 120px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            border: 3px dashed #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            color: #6c757d;
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+        
+        .item-image:hover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        
+        .item-image.has-image {
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-style: solid;
+            border-color: #28a745;
+            border-width: 3px;
+        }
+        
+        .item-image.drag-over {
+            border-color: #007bff;
+            background: #e3f2fd;
+            transform: scale(1.1);
+        }
+        
+        .item-code {
+            font-size: 10px;
+            background: #6c757d;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 14px;
+            line-height: 1.3;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .item-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .detail-label {
+            color: #6c757d;
+        }
+        
+        .detail-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .editable-value {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 12px;
+            width: 85px;
+            text-align: right;
+            transition: all 0.3s;
+        }
+        
+        .editable-value:hover {
+            border-color: #007bff;
+            background: #f8f9fa;
+            cursor: text;
+        }
+        
+        .editable-value:focus {
+            outline: none;
+            border-color: #007bff;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .qty-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            background: #007bff;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qty-btn:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+        }
+        
+        .qty-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .qty-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 30px;
+            text-align: center;
+        }
+        
+        .item-totals {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 2px 0;
+        }
+        
+        .total-row.main {
+            font-weight: bold;
+            color: #28a745;
+            border-top: 1px solid #dee2e6;
+            padding-top: 4px;
+            margin-top: 6px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding: 20px;
+            background: #f8f9fa;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            padding: 10px;
+            margin: 20px 0 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .category-header.search-hidden {
+            display: none;
+        }
+        
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .report-content {
+            background: white;
+            margin: 20px auto;
+            padding: 0;
+            border-radius: 15px;
+            max-width: 90%;
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .export-actions {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .export-btn.csv {
+            background: #28a745;
+            color: white;
+        }
+        
+        .export-btn.pdf {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .export-btn.html {
+            background: #6f42c1;
+            color: white;
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .setup-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pos-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .actions {
+                justify-content: center;
+            }
+            
+            .action-btn {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Pesa21 POS & Report Generator</h1>
+            <p>Interactive sales tracking with auto-calculated profit sharing</p>
+        </div>
+        
+        <div class="event-setup">
+            <div class="setup-grid">
+                <div class="input-group">
+                    <label for="eventName">Event Name:</label>
+                    <input type="text" id="eventName" placeholder="e.g., COMIFURO 20">
+                </div>
+                <div class="input-group">
+                    <label for="eventDate">Event Date:</label>
+                    <input type="date" id="eventDate">
+                </div>
+                <div class="input-group">
+                    <label for="eventLocation">Location:</label>
+                    <input type="text" id="eventLocation" placeholder="e.g., Jakarta, Indonesia">
+                </div>
+                <div class="input-group">
+                    <label>Currency:</label>
+                    <div class="currency-toggle">
+                        <button class="currency-btn active" onclick="setCurrency('IDR')">🇮🇩 Rupiah</button>
+                        <button class="currency-btn" onclick="setCurrency('SGD')">🇸🇬 SGD</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search products... (try typing 'ORV', 'postcard', 'B5', etc.)" oninput="searchProducts()">
+            <div class="search-icon">🔍</div>
+        </div>
+        
+        <div class="pos-section">
+            <div class="pos-header">
+                <h2>📱 Point of Sale Interface</h2>
+                <div class="total-display">
+                    <div style="font-size: 14px; opacity: 0.9;">Artist Revenue Share (50%)</div>
+                    <div id="totalRevenue" style="font-size: 24px; font-weight: bold;">Rp0</div>
+                </div>
+            </div>
+            
+            <div id="itemsContainer">
+                <!-- Items will be populated by JavaScript -->
+            </div>
+            
+            <div class="actions">
+                <button class="action-btn btn-warning" onclick="clearAllSales()">🗑️ Clear Sales</button>
+                <button class="action-btn btn-warning" onclick="resetCustomPrices()" style="background: linear-gradient(135deg, #fd7e14 0%, #e55100 100%);">🔄 Reset Prices</button>
+                <button class="action-btn btn-primary" onclick="saveCurrentState()">💾 Save State</button>
+                <button class="action-btn btn-success" onclick="generateReport()">📊 Generate Report</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="reportModal" class="report-modal">
+        <div class="report-content">
+            <button class="close-btn" onclick="closeReport()">&times;</button>
+            <div id="generatedReport"></div>
+            <div class="export-actions">
+                <button class="export-btn csv" onclick="exportCSV()">📊 Export CSV Data</button>
+                <button class="export-btn pdf" onclick="exportPDF()">📑 Save as PDF</button>
+                <button class="export-btn html" onclick="exportHTML()">💾 Save as HTML</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Master product database with standardized costs (REMOVED P21-ORV-PCD-OLD x3 set)
+        const masterProducts = {
+            'postcards_singles': [
+                {code: 'P21-ORV-PCD-NEW', name: 'ORV 02 Postcards (All types, single)', priceIDR: 30000, priceSGD: 3.00, costIDR: 4500, costSGD: 0.45},
+                {code: 'P21-ORV-PCD-OLD', name: 'ORV Postcards (All types, single)', priceIDR: 15000, priceSGD: 1.50, costIDR: 4500, costSGD: 0.45},
+                {code: 'P21-HQ-PCD', name: 'Haikyuu Postcards (All types, single)', priceIDR: 10000, priceSGD: 2.00, costIDR: 4500, costSGD: 0.45},
+                {code: 'P21-BNHA-PCD', name: 'BNHA Postcards (Singles)', priceIDR: 10000, priceSGD: 2.00, costIDR: 4500, costSGD: 0.45},
+                {code: 'P21-ORV-PCD', name: 'Postcards (All types, single)', priceIDR: 20000, priceSGD: 2.00, costIDR: 5300, costSGD: 0.53}
+            ],
+            'postcards_sets': [
+                {code: 'P21-HQ-PCD-SET', name: 'Haikyuu Postcards (Set)', priceIDR: 120000, priceSGD: 20.00, costIDR: 45000, costSGD: 4.50},
+                {code: 'P21-BNHA-PCD-SET', name: 'BNHA Postcards (Old set)', priceIDR: 100000, priceSGD: 10.00, costIDR: 45000, costSGD: 4.50},
+                {code: 'P21-ORV-PCD-SET-01-REG', name: 'ORV Postcard Set 01 REG', priceIDR: 100000, priceSGD: 10.00, costIDR: 31500, costSGD: 3.15},
+                {code: 'P21-ORV-PCD-SET-01-LE', name: 'ORV Postcard Set 01 LE', priceIDR: 150000, priceSGD: 15.00, costIDR: 31500, costSGD: 3.15},
+                {code: 'P21-ORV-PCD-SET-02-REG', name: 'ORV Postcard set 02 REG', priceIDR: 200000, priceSGD: 20.00, costIDR: 40500, costSGD: 4.05},
+                {code: 'P21-ORV-PCD-SET-02-LE', name: 'ORV Postcard set 02 LE', priceIDR: 250000, priceSGD: 25.00, costIDR: 42500, costSGD: 4.25}
+            ],
+            'polaroids': [
+                {code: 'P21-ORV-POL-CP', name: 'ORV Polaroid New CP (Singles)', priceIDR: 20000, priceSGD: 3.50, costIDR: 4500, costSGD: 0.45},
+                {code: 'P21-ORV-POL-TW', name: 'ORV Polaroid (TW Version)', priceIDR: 10000, priceSGD: 2.00, costIDR: 9250, costSGD: 0.93},
+                {code: 'P21-ORV-POL-SET-01-REG', name: 'ORV Polaroid set Regular', priceIDR: 60000, priceSGD: 6.00, costIDR: 37000, costSGD: 3.70},
+                {code: 'P21-ORV-POL-SET-01-HOLO', name: 'ORV Polaroid Hologram', priceIDR: 100000, priceSGD: 10.00, costIDR: 60000, costSGD: 6.00}
+            ],
+            'prints': [
+                {code: 'P21-ORV-PT-B5-01', name: 'ORV Prints B5 - Sky Couple', priceIDR: 50000, priceSGD: 5.00, costIDR: 10000, costSGD: 1.00},
+                {code: 'P21-ORV-PT-B5-02', name: 'ORV Prints B5 - KDJ Garden', priceIDR: 50000, priceSGD: 5.00, costIDR: 10000, costSGD: 1.00},
+                {code: 'P21-ORV-PT-B5-03', name: 'ORV Prints B5 - YJH Black', priceIDR: 50000, priceSGD: 5.00, costIDR: 10000, costSGD: 1.00},
+                {code: 'P21-ORV-PT-B5-04', name: 'ORV Prints B5 - YJH Flower', priceIDR: 50000, priceSGD: 5.00, costIDR: 10000, costSGD: 1.00}
+            ],
+            'books': [
+                {code: 'P21-BK-SK-01-REG', name: 'Sketchlog 01 (REGULAR)', priceIDR: 200000, priceSGD: 20.00, costIDR: 37000, costSGD: 3.70},
+                {code: 'P21-BK-SK-01-LE', name: 'Sketchlog 01 (LIMITED)', priceIDR: 250000, priceSGD: 25.00, costIDR: 98000, costSGD: 9.80}
+            ],
+            'standees': [
+                {code: 'P21-ORV-ST-01-HOLO', name: 'KDJ Standee hologram', priceIDR: 175000, priceSGD: 17.50, costIDR: 89100, costSGD: 8.91}
+            ]
+        };
+
+        let currentCurrency = 'IDR';
+        let salesData = {};
+        let productImages = {};
+        let customPrices = {};
+        let customCosts = {};
+        let currentReportHTML = '';
+
+        function setCurrency(currency) {
+            currentCurrency = currency;
+            document.querySelectorAll('.currency-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderItems();
+            updateTotalDisplay();
+        }
+
+        function formatCurrency(amount) {
+            if (currentCurrency === 'IDR') {
+                return 'Rp' + amount.toLocaleString('id-ID');
+            } else {
+                return '$' + amount.toFixed(2);
+            }
+        }
+
+        function getPrice(product) {
+            const customKey = `${product.code}_${currentCurrency}`;
+            if (customPrices[customKey] !== undefined) {
+                return parseFloat(customPrices[customKey]);
+            }
+            return currentCurrency === 'IDR' ? product.priceIDR : product.priceSGD;
+        }
+
+        function getCost(product) {
+            const customKey = `${product.code}_${currentCurrency}`;
+            if (customCosts[customKey] !== undefined) {
+                return parseFloat(customCosts[customKey]);
+            }
+            return currentCurrency === 'IDR' ? product.costIDR : product.costSGD;
+        }
+
+        function updateProductPrice(productCode, newPrice) {
+            const customKey = `${productCode}_${currentCurrency}`;
+            customPrices[customKey] = parseFloat(newPrice);
+            savePricesAndCosts();
+            renderItems();
+            updateTotalDisplay();
+        }
+
+        function updateProductCost(productCode, newCost) {
+            const customKey = `${productCode}_${currentCurrency}`;
+            customCosts[customKey] = parseFloat(newCost);
+            savePricesAndCosts();
+            renderItems();
+            updateTotalDisplay();
+        }
+
+        function savePricesAndCosts() {
+            localStorage.setItem('pesa21_custom_prices', JSON.stringify(customPrices));
+            localStorage.setItem('pesa21_custom_costs', JSON.stringify(customCosts));
+        }
+
+        function loadPricesAndCosts() {
+            const savedPrices = localStorage.getItem('pesa21_custom_prices');
+            const savedCosts = localStorage.getItem('pesa21_custom_costs');
+            if (savedPrices) {
+                customPrices = JSON.parse(savedPrices);
+            }
+            if (savedCosts) {
+                customCosts = JSON.parse(savedCosts);
+            }
+        }
+
+        function calculateItemTotals(product, quantity) {
+            const price = getPrice(product);
+            const cost = getCost(product);
+            const grossProfit = price * quantity;
+            const totalCost = cost * quantity;
+            const netProfit = grossProfit - totalCost;
+            const revenueShare = netProfit / 2;
+
+            return {
+                grossProfit,
+                totalCost,
+                netProfit,
+                revenueShare
+            };
+        }
+
+        function updateQuantity(productCode, change) {
+            if (!salesData[productCode]) {
+                salesData[productCode] = 0;
+            }
+            
+            salesData[productCode] = Math.max(0, salesData[productCode] + change);
+            
+            renderItems();
+            updateTotalDisplay();
+        }
+
+        function updateTotalDisplay() {
+            let totalRevenue = 0;
+            
+            Object.entries(salesData).forEach(([code, quantity]) => {
+                if (quantity > 0) {
+                    const product = findProduct(code);
+                    if (product) {
+                        const totals = calculateItemTotals(product, quantity);
+                        totalRevenue += totals.revenueShare;
+                    }
+                }
+            });
+            
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+        }
+
+        function findProduct(code) {
+            for (const category of Object.values(masterProducts)) {
+                const product = category.find(p => p.code === code);
+                if (product) return product;
+            }
+            return null;
+        }
+
+        function handleImageUpload(productCode, event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    productImages[productCode] = e.target.result;
+                    saveImages();
+                    renderItems();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleImageDrop(productCode, event) {
+            event.preventDefault();
+            const files = event.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    productImages[productCode] = e.target.result;
+                    saveImages();
+                    renderItems();
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        }
+
+        function saveImages() {
+            localStorage.setItem('pesa21_product_images', JSON.stringify(productImages));
+        }
+
+        function loadImages() {
+            const saved = localStorage.getItem('pesa21_product_images');
+            if (saved) {
+                productImages = JSON.parse(saved);
+            }
+        }
+
+        function searchProducts() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const allCards = document.querySelectorAll('.item-card');
+            const allHeaders = document.querySelectorAll('.category-header');
+            
+            if (searchTerm === '') {
+                // Show all items and headers
+                allCards.forEach(card => {
+                    card.classList.remove('search-hidden', 'search-highlight');
+                });
+                allHeaders.forEach(header => {
+                    header.classList.remove('search-hidden');
+                });
+                return;
+            }
+
+            // Hide all headers first
+            allHeaders.forEach(header => {
+                header.classList.add('search-hidden');
+            });
+
+            let hasVisibleItems = false;
+            allCards.forEach(card => {
+                const productCode = card.querySelector('.item-code').textContent.toLowerCase();
+                const productName = card.querySelector('.item-name').textContent.toLowerCase();
+                
+                if (productCode.includes(searchTerm) || productName.includes(searchTerm)) {
+                    card.classList.remove('search-hidden');
+                    card.classList.add('search-highlight');
+                    hasVisibleItems = true;
+                    
+                    // Show the category header for this item
+                    const categoryHeader = card.parentNode.previousElementSibling;
+                    if (categoryHeader && categoryHeader.classList.contains('category-header')) {
+                        categoryHeader.classList.remove('search-hidden');
+                    }
+                } else {
+                    card.classList.add('search-hidden');
+                    card.classList.remove('search-highlight');
+                }
+            });
+        }
+
+        function renderItems() {
+            const container = document.getElementById('itemsContainer');
+            container.innerHTML = '';
+
+            Object.entries(masterProducts).forEach(([categoryKey, products]) => {
+                const categoryNames = {
+                    'postcards_singles': '📄 Single Postcards',
+                    'postcards_sets': '📚 Postcard Sets',
+                    'polaroids': '📸 Polaroids',
+                    'prints': '🖼️ B5 Prints',
+                    'books': '📖 Books & Sketchlogs',
+                    'standees': '🎭 Standees'
+                };
+
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'category-header';
+                categoryHeader.textContent = categoryNames[categoryKey];
+                container.appendChild(categoryHeader);
+
+                const itemsGrid = document.createElement('div');
+                itemsGrid.className = 'items-grid';
+
+                products.forEach(product => {
+                    const quantity = salesData[product.code] || 0;
+                    const totals = calculateItemTotals(product, quantity);
+                    const price = getPrice(product);
+                    const cost = getCost(product);
+                    const hasImage = productImages[product.code];
+
+                    const itemCard = document.createElement('div');
+                    itemCard.className = `item-card ${quantity > 0 ? 'has-sales' : ''}`;
+                    itemCard.innerHTML = `
+                        <div class="item-image ${hasImage ? 'has-image' : ''}" 
+                             style="${hasImage ? `background-image: url(${hasImage});` : ''}"
+                             onclick="document.getElementById('imageInput_${product.code}').click()"
+                             ondrop="handleImageDrop('${product.code}', event)"
+                             ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                             ondragleave="this.classList.remove('drag-over')">
+                            ${hasImage ? '' : '📷 Drag & Drop Photo Here'}
+                        </div>
+                        <input type="file" id="imageInput_${product.code}" 
+                               style="display: none" accept="image/*"
+                               onchange="handleImageUpload('${product.code}', event)">
+                        
+                        <div class="item-header">
+                            <div class="item-code">${product.code}</div>
+                            <div class="item-name">${product.name}</div>
+                        </div>
+                        
+                        <div class="item-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Price:</span>
+                                <input type="number" class="editable-value" 
+                                       value="${price}" 
+                                       step="${currentCurrency === 'IDR' ? '1000' : '0.50'}"
+                                       min="0"
+                                       onchange="updateProductPrice('${product.code}', this.value)"
+                                       onclick="event.stopPropagation()">
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Cost:</span>
+                                <input type="number" class="editable-value" 
+                                       value="${cost}" 
+                                       step="${currentCurrency === 'IDR' ? '500' : '0.25'}"
+                                       min="0"
+                                       onchange="updateProductCost('${product.code}', this.value)"
+                                       onclick="event.stopPropagation()">
+                            </div>
+                        </div>
+                        
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="updateQuantity('${product.code}', -1)" ${quantity === 0 ? 'disabled' : ''}>−</button>
+                            <div class="qty-display">${quantity}</div>
+                            <button class="qty-btn" onclick="updateQuantity('${product.code}', 1)">+</button>
+                        </div>
+                        
+                        ${quantity > 0 ? `
+                            <div class="item-totals">
+                                <div class="total-row">
+                                    <span>Gross:</span>
+                                    <span>${formatCurrency(totals.grossProfit)}</span>
+                                </div>
+                                <div class="total-row">
+                                    <span>Cost:</span>
+                                    <span>${formatCurrency(totals.totalCost)}</span>
+                                </div>
+                                <div class="total-row">
+                                    <span>Net:</span>
+                                    <span>${formatCurrency(totals.netProfit)}</span>
+                                </div>
+                                <div class="total-row main">
+                                    <span>Artist Share:</span>
+                                    <span>${formatCurrency(totals.revenueShare)}</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                    `;
+                    
+                    itemsGrid.appendChild(itemCard);
+                });
+
+                container.appendChild(itemsGrid);
+            });
+        }
+
+        function resetCustomPrices() {
+            if (confirm('🔄 Reset all prices & costs to defaults?\n\n⚠️ This will remove all your custom pricing')) {
+                customPrices = {};
+                customCosts = {};
+                savePricesAndCosts();
+                renderItems();
+                updateTotalDisplay();
+            }
+        }
+
+        function clearAllSales() {
+            if (confirm('🗑️ Clear sales data?\n\n✅ Product images will be kept\n✅ Custom prices will be kept\n❌ Only sales quantities will be cleared')) {
+                salesData = {};
+                renderItems();
+                updateTotalDisplay();
+                // Clear search
+                document.getElementById('searchBox').value = '';
+                searchProducts();
+            }
+        }
+
+        function saveCurrentState() {
+            const state = {
+                currency: currentCurrency,
+                eventName: document.getElementById('eventName').value,
+                eventDate: document.getElementById('eventDate').value,
+                eventLocation: document.getElementById('eventLocation').value,
+                salesData: salesData
+            };
+            
+            localStorage.setItem('pesa21_current_state', JSON.stringify(state));
+            alert('✅ Current state saved successfully!');
+        }
+
+        function loadSavedState() {
+            const saved = localStorage.getItem('pesa21_current_state');
+            if (saved) {
+                const state = JSON.parse(saved);
+                currentCurrency = state.currency || 'IDR';
+                document.getElementById('eventName').value = state.eventName || '';
+                document.getElementById('eventDate').value = state.eventDate || '';
+                document.getElementById('eventLocation').value = state.eventLocation || '';
+                salesData = state.salesData || {};
+                
+                setCurrency(currentCurrency);
+                renderItems();
+                updateTotalDisplay();
+            }
+        }
+
+        function generateReport() {
+            const eventName = document.getElementById('eventName').value || 'Untitled Event';
+            const eventDate = document.getElementById('eventDate').value || new Date().toISOString().split('T')[0];
+            const eventLocation = document.getElementById('eventLocation').value || 'Location TBD';
+            
+            let totalRevenueShare = 0;
+            let hasAnySales = false;
+            
+            // Calculate totals and check for sales
+            Object.entries(salesData).forEach(([code, quantity]) => {
+                if (quantity > 0) {
+                    hasAnySales = true;
+                    const product = findProduct(code);
+                    if (product) {
+                        const totals = calculateItemTotals(product, quantity);
+                        totalRevenueShare += totals.revenueShare;
+                    }
+                }
+            });
+
+            if (!hasAnySales) {
+                alert('⚠️ No sales recorded yet! Please add some sales before generating a report.');
+                return;
+            }
+
+            const currencySymbol = currentCurrency === 'IDR' ? 'Rp' : '$';
+            const currencyName = currentCurrency === 'IDR' ? 'Indonesian Rupiah (Rp)' : 'Singapore Dollars (SGD)';
+            
+            let tableRows = '';
+            
+            // Generate table rows for all products
+            Object.values(masterProducts).forEach(category => {
+                category.forEach(product => {
+                    const quantity = salesData[product.code] || 0;
+                    const price = getPrice(product);
+                    const cost = getCost(product);
+                    const totals = calculateItemTotals(product, quantity);
+                    
+                    const rowClass = quantity > 0 ? '' : 'no-sales';
+                    
+                    tableRows += `
+                        <tr class="${rowClass}">
+                            <td>${product.code}</td>
+                            <td>${product.name}</td>
+                            <td class="currency">${formatCurrency(price)}</td>
+                            <td class="currency">${quantity}</td>
+                            <td class="currency">${formatCurrency(totals.grossProfit)}</td>
+                            <td class="currency">${formatCurrency(cost)}</td>
+                            <td class="currency">${formatCurrency(totals.totalCost)}</td>
+                            <td class="currency">${formatCurrency(totals.netProfit)}</td>
+                            <td class="currency">${formatCurrency(totals.revenueShare)}</td>
+                        </tr>
+                    `;
+                });
+            });
+
+            currentReportHTML = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${eventName} Sales Report</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                            background-color: #f5f5f5;
+                        }
+                        .header {
+                            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                            color: white;
+                            padding: 20px;
+                            border-radius: 10px;
+                            margin-bottom: 20px;
+                            text-align: center;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            background: white;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                        }
+                        th {
+                            background-color: #4a5568;
+                            color: white;
+                            padding: 12px;
+                            text-align: left;
+                            font-weight: bold;
+                            font-size: 11px;
+                        }
+                        td {
+                            padding: 10px 12px;
+                            border-bottom: 1px solid #e2e8f0;
+                            font-size: 12px;
+                        }
+                        tr:hover {
+                            background-color: #f7fafc;
+                        }
+                        .total-row {
+                            background-color: #edf2f7;
+                            font-weight: bold;
+                        }
+                        .currency {
+                            text-align: right;
+                        }
+                        .footer {
+                            margin-top: 20px;
+                            padding: 15px;
+                            background: #2d3748;
+                            color: white;
+                            border-radius: 8px;
+                            text-align: center;
+                        }
+                        .no-sales {
+                            opacity: 0.6;
+                        }
+                        .print-btn {
+                            background: #28a745;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            margin: 10px;
+                        }
+                        @media print {
+                            .print-btn { display: none; }
+                            body { margin: 0; background: white; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <button class="print-btn" onclick="window.print()">🖨️ Print Report</button>
+                    
+                    <div class="header">
+                        <h1>📊 ${eventName} Sales Report</h1>
+                        <p>Event Date: ${eventDate}</p>
+                        <p>Location: ${eventLocation}</p>
+                        <p>Currency: ${currencyName}</p>
+                        <p>Generated: ${new Date().toLocaleString()}</p>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PRODUCT CODE</th>
+                                <th>ITEM NAME</th>
+                                <th>PRICE</th>
+                                <th>SALES</th>
+                                <th>GROSS PROFIT</th>
+                                <th>UNIT COST</th>
+                                <th>TOTAL COST</th>
+                                <th>NET PROFIT</th>
+                                <th>REVENUE SHARING<br>50% (NET / 2)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="8" style="text-align: right; font-weight: bold;">Sub Total:</td>
+                                <td class="currency" style="font-weight: bold;">${formatCurrency(totalRevenueShare)}</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="8" style="text-align: right; font-weight: bold;">STATUS:</td>
+                                <td class="currency" style="font-weight: bold;">PROCESSING</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="footer">
+                        <p><strong>Artist Revenue Share (50%):</strong> ${formatCurrency(totalRevenueShare)}</p>
+                        <p>Report generated by Pesa21 POS System ✨</p>
+                        <p>Status: Ready for Payment Processing 💰</p>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            document.getElementById('generatedReport').innerHTML = currentReportHTML;
+            document.getElementById('reportModal').style.display = 'block';
+        }
+
+        function exportCSV() {
+            const eventName = document.getElementById('eventName').value || 'Untitled Event';
+            let csvContent = 'Product Code,Item Name,Price,Sales,Gross Profit,Unit Cost,Total Cost,Net Profit,Revenue Share\n';
+            
+            Object.values(masterProducts).forEach(category => {
+                category.forEach(product => {
+                    const quantity = salesData[product.code] || 0;
+                    const price = getPrice(product);
+                    const cost = getCost(product);
+                    const totals = calculateItemTotals(product, quantity);
+                    
+                    csvContent += `"${product.code}","${product.name}",${price},${quantity},${totals.grossProfit},${cost},${totals.totalCost},${totals.netProfit},${totals.revenueShare}\n`;
+                });
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${eventName}_sales_data.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function exportPDF() {
+            window.print();
+        }
+
+        function exportHTML() {
+            const eventName = document.getElementById('eventName').value || 'Untitled Event';
+            const blob = new Blob([currentReportHTML], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${eventName}_sales_report.html`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function closeReport() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadImages();
+            loadPricesAndCosts();
+            loadSavedState();
+            renderItems();
+            updateTotalDisplay();
+            
+            // Set today's date as default
+            document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('reportModal');
+            if (event.target === modal) {
+                closeReport();
+            }
+        }
+    </script>
+</body>
+</html>

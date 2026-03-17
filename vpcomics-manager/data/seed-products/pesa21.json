@@ -1,0 +1,19 @@
+[
+  { "code": "P21-ORV-PCD-SET-01-LE", "artistId": 2, "category": "postcards", "name": "ORV Postcard set 01 LIMITED EDITION", "priceIDR": 225000, "priceSGD": 15, "costIDR": 40000, "costSGD": 2.5, "image": "P21-ORV-PCD-SET-01.png", "active": true },
+  { "code": "P21-ORV-PCD-SET-01-REG", "artistId": 2, "category": "postcards", "name": "ORV Postcard set 01 REGULAR EDITION", "priceIDR": 150000, "priceSGD": 10, "costIDR": 30000, "costSGD": 2, "image": "P21-ORV-PCD-SET-01.png", "active": true },
+  { "code": "P21-ORV-PCD-SET-02-LE", "artistId": 2, "category": "postcards", "name": "ORV Postcard set 02 LIMITED EDITION", "priceIDR": 300000, "priceSGD": 20, "costIDR": 50000, "costSGD": 3.5, "image": "P21-ORV-PCD-SET-02-LE.png", "active": true },
+  { "code": "P21-ORV-PCD-SET-02-REG", "artistId": 2, "category": "postcards", "name": "ORV Postcard set 02 REGULAR EDITION", "priceIDR": 200000, "priceSGD": 13, "costIDR": 40000, "costSGD": 2.5, "image": "P21-ORV-PCD-SET-02-REG.png", "active": true },
+  { "code": "P21-BNHA-PCD", "artistId": 2, "category": "postcards", "name": "Postcard BNHA (Old) BNHA Prince singles", "priceIDR": 15000, "priceSGD": 1, "costIDR": 3000, "costSGD": 0.2, "image": "P21-BNHA-PCD.png", "active": true },
+  { "code": "P21-BNHA-SET", "artistId": 2, "category": "postcards", "name": "BNHA Set", "priceIDR": 150000, "priceSGD": 10, "costIDR": 30000, "costSGD": 2, "image": "P21-BNHA-SET.png", "active": true },
+  { "code": "P21-HQ-PCD", "artistId": 2, "category": "postcards", "name": "Postcard Haikyuu (Old)", "priceIDR": 30000, "priceSGD": 2, "costIDR": 5000, "costSGD": 0.3, "image": "P21-HQ-PCD.png", "active": true },
+  { "code": "P21-ORV-POL-SET-01-HOLO", "artistId": 2, "category": "polaroids", "name": "ORV Polaroid set 01 HOLOGRAM", "priceIDR": 150000, "priceSGD": 10, "costIDR": 25000, "costSGD": 1.7, "image": "P21-ORV-POL-SET-01-HOLO.png", "active": true },
+  { "code": "P21-ORV-POL", "artistId": 2, "category": "polaroids", "name": "ORV Polaroid (Singles) (Fancy)", "priceIDR": 30000, "priceSGD": 2, "costIDR": 5000, "costSGD": 0.3, "image": "p21-orv-pcd.png", "active": true },
+  { "code": "P21-ORV-POL-SET-01-REG", "artistId": 2, "category": "polaroids", "name": "ORV Polaroid set 01 REGULAR", "priceIDR": 90000, "priceSGD": 6, "costIDR": 15000, "costSGD": 1, "image": "P21-ORV-POL-SET-01-REG.png", "active": true },
+  { "code": "P21-ORV-POL-CP", "artistId": 2, "category": "polaroids", "name": "ORV Polaroid Jongdok New Matt & Sirio", "priceIDR": 30000, "priceSGD": 2, "costIDR": 5000, "costSGD": 0.3, "image": "P21-ORV-POL-CP.png", "active": true },
+  { "code": "P21-ORV-PT-B5-01", "artistId": 2, "category": "prints", "name": "ORV B5 Prints Sky Couple", "priceIDR": 75000, "priceSGD": 5, "costIDR": 15000, "costSGD": 1, "image": "P21-ORV-PT-B5-01.png", "active": true },
+  { "code": "P21-ORV-PT-B5-02", "artistId": 2, "category": "prints", "name": "KDJ Garden", "priceIDR": 75000, "priceSGD": 5, "costIDR": 15000, "costSGD": 1, "image": "P21-ORV-PT-B5-02.png", "active": true },
+  { "code": "P21-ORV-PT-B5-03", "artistId": 2, "category": "prints", "name": "YJH Black", "priceIDR": 75000, "priceSGD": 5, "costIDR": 15000, "costSGD": 1, "image": "P21-ORV-PT-B5-03.png", "active": true },
+  { "code": "P21-ORV-PT-B5-04", "artistId": 2, "category": "prints", "name": "YJH Flower", "priceIDR": 75000, "priceSGD": 5, "costIDR": 15000, "costSGD": 1, "image": "P21-ORV-PT-B5-04.png", "active": true },
+  { "code": "P21-ORV-BK-SL-01-LEB", "artistId": 2, "category": "books", "name": "Pesa21 sketchlog 01 Limited Edition (B-stock)", "priceIDR": 300000, "priceSGD": 20, "costIDR": 60000, "costSGD": 4, "image": "P21-ORV-BK-SL-01-LEB.jpg", "active": true },
+  { "code": "P21-ORV-BK-SL-01-REG", "artistId": 2, "category": "books", "name": "Pesa21 sketchlog 01 Reguler", "priceIDR": 270000, "priceSGD": 18, "costIDR": 54000, "costSGD": 3.6, "image": "P21-ORV-BK-SL-01-REG.jpg", "active": true }
+]

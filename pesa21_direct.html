@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PESA21 EMERGENCY POS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background: #1a202c;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .setup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .currency-toggle {
+            display: flex;
+            gap: 10px;
+        }
+        .currency-btn {
+            padding: 10px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .currency-btn.active {
+            background: #4299e1;
+            color: white;
+        }
+        .products {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+        .category {
+            margin-bottom: 20px;
+        }
+        .category-header {
+            background: #4a5568;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .item-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .item-code {
+            background: #718096;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .item-title {
+            font-weight: bold;
+            flex: 1;
+            margin-left: 10px;
+        }
+        .item-price {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 50%;
+            background: #4299e1;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .qty-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+        .qty-display {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .totals {
+            background: #2d3748;
+            color: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .total-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .total-amount {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .has-sales {
+            border-color: #48bb78;
+            background-color: #f0fff4;
+        }
+        .search-box {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+            font-size: 16px;
+        }
+        .search-highlight {
+            border-color: #4299e1 !important;
+            box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5);
+        }
+        .search-hidden {
+            display: none !important;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        .action-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #4299e1;
+            color: white;
+            cursor: pointer;
+            flex: 1;
+        }
+        .action-btn.warning {
+            background: #f56565;
+        }
+        .report-btn {
+            background: #48bb78;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 PESA21 EMERGENCY POS</h1>
+    </div>
+    
+    <div class="content">
+        <div class="setup-grid">
+            <div class="input-group">
+                <label for="eventName">Event Name:</label>
+                <input type="text" id="eventName" placeholder="e.g., COMIFURO 20">
+            </div>
+            <div class="input-group">
+                <label for="eventDate">Event Date:</label>
+                <input type="date" id="eventDate">
+            </div>
+            <div class="input-group">
+                <label for="eventLocation">Location:</label>
+                <input type="text" id="eventLocation" placeholder="e.g., Jakarta, Indonesia">
+            </div>
+            <div class="input-group">
+                <label>Currency:</label>
+                <div class="currency-toggle">
+                    <button class="currency-btn active" onclick="setCurrency('IDR')">🇮🇩 Rupiah</button>
+                    <button class="currency-btn" onclick="setCurrency('SGD')">🇸🇬 SGD</button>
+                </div>
+            </div>
+        </div>
+        
+        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search products..." oninput="searchProducts()">
+        
+        <div class="totals">
+            <div class="total-label">Artist Revenue Share (50%)</div>
+            <div class="total-amount" id="totalRevenue">Rp0</div>
+        </div>
+        
+        <div class="products" id="productsContainer">
+            <p style="text-align: center; padding: 50px;">Loading PESA21 data... Please wait.</p>
+        </div>
+        
+        <div class="actions">
+            <button class="action-btn warning" onclick="clearAllSales()">🗑️ Clear Sales</button>
+            <button class="action-btn" onclick="saveCurrentState()">💾 Save State</button>
+            <button class="action-btn report-btn" onclick="generateReport()">📊 Generate Report</button>
+        </div>
+    </div>
+
+    <script>
+        // Emergency PESA21 Database
+        const pesa21Products = {
+            'postcards': [
+                {code: 'P21-ORV-PCD-NEW', name: 'ORV 02 Postcards (New)', priceIDR: 30000, priceSGD: 3.00, costIDR: 4500, costSGD: 0.45},
+                {code: 'P21-ORV-PCD-OLD', name: 'ORV Postcards (Old)', priceIDR: 15000, priceSGD: 1.50, costIDR: 4500, costSGD: 0.45},
+                {code: 'P21-ORV-PCD-SET-01-REG', name: 'ORV Postcard Set 01 REG', priceIDR: 100000, priceSGD: 10.00, costIDR: 31500, costSGD: 3.15}
+            ],
+            'polaroids': [
+                {code: 'P21-ORV-POL-CP', name: 'ORV Polaroid CP', priceIDR: 20000, priceSGD: 3.50, costIDR: 4500, costSGD: 0.45},
+                {code: 'P21-ORV-POL-TW', name: 'ORV Polaroid TW', priceIDR: 10000, priceSGD: 2.00, costIDR: 9250, costSGD: 0.93}
+            ],
+            'prints': [
+                {code: 'P21-ORV-PT-B5-01', name: 'ORV Prints B5 - Sky Couple', priceIDR: 50000, priceSGD: 5.00, costIDR: 10000, costSGD: 1.00},
+                {code: 'P21-ORV-PT-B5-02', name: 'ORV Prints B5 - KDJ Garden', priceIDR: 50000, priceSGD: 5.00, costIDR: 10000, costSGD: 1.00}
+            ],
+            'books': [
+                {code: 'P21-BK-SK-01-REG', name: 'Sketchlog 01 (REGULAR)', priceIDR: 200000, priceSGD: 20.00, costIDR: 37000, costSGD: 3.70}
+            ]
+        };
+        
+        // Basic state variables
+        let currentCurrency = 'IDR';
+        let salesData = {};
+        let customPrices = {};
+        let customCosts = {};
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('eventDate').value = today;
+            
+            // Load data from localStorage
+            loadData();
+            
+            // Render the product grid
+            renderProducts();
+            
+            // Calculate initial totals
+            updateTotalDisplay();
+        });
+        
+        // Currency functions
+        function setCurrency(currency) {
+            currentCurrency = currency;
+            document.querySelectorAll('.currency-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderProducts();
+            updateTotalDisplay();
+        }
+        
+        function formatCurrency(amount) {
+            if (currentCurrency === 'IDR') {
+                return 'Rp' + amount.toLocaleString('id-ID');
+            } else {
+                return '$' + amount.toFixed(2);
+            }
+        }
+        
+        // Product functions
+        function getPrice(product) {
+            const customKey = `${product.code}_${currentCurrency}`;
+            if (customPrices[customKey] !== undefined) {
+                return parseFloat(customPrices[customKey]);
+            }
+            return currentCurrency === 'IDR' ? product.priceIDR : product.priceSGD;
+        }
+        
+        function getCost(product) {
+            const customKey = `${product.code}_${currentCurrency}`;
+            if (customCosts[customKey] !== undefined) {
+                return parseFloat(customCosts[customKey]);
+            }
+            return currentCurrency === 'IDR' ? product.costIDR : product.costSGD;
+        }
+        
+        function calculateItemTotals(product, quantity) {
+            const price = getPrice(product);
+            const cost = getCost(product);
+            const grossProfit = price * quantity;
+            const totalCost = cost * quantity;
+            const netProfit = grossProfit - totalCost;
+            const revenueShare = netProfit * 0.5; // 50% revenue share for PESA21
+            
+            return {
+                grossProfit,
+                totalCost,
+                netProfit,
+                revenueShare
+            };
+        }
+        
+        // Render functions
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '';
+            
+            Object.entries(pesa21Products).forEach(([category, products]) => {
+                const categoryEl = document.createElement('div');
+                categoryEl.className = 'category';
+                
+                const categoryNames = {
+                    'postcards': 'Postcards',
+                    'polaroids': 'Polaroids',
+                    'prints': 'Prints',
+                    'books': 'Books'
+                };
+                
+                categoryEl.innerHTML = `<div class="category-header">${categoryNames[category] || category}</div>`;
+                
+                const itemsGrid = document.createElement('div');
+                itemsGrid.className = 'items-grid';
+                
+                products.forEach(product => {
+                    const quantity = salesData[product.code] || 0;
+                    const price = getPrice(product);
+                    
+                    const itemCard = document.createElement('div');
+                    itemCard.className = `item-card ${quantity > 0 ? 'has-sales' : ''}`;
+                    
+                    itemCard.innerHTML = `
+                        <div class="item-header">
+                            <div class="item-code">${product.code}</div>
+                            <div class="item-title">${product.name}</div>
+                        </div>
+                        <div class="item-price">
+                            <div>Price:</div>
+                            <div>${formatCurrency(price)}</div>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="updateQuantity('${product.code}', -1)" ${quantity === 0 ? 'disabled' : ''}>-</button>
+                            <div class="qty-display">${quantity}</div>
+                            <button class="qty-btn" onclick="updateQuantity('${product.code}', 1)">+</button>
+                        </div>
+                    `;
+                    
+                    itemsGrid.appendChild(itemCard);
+                });
+                
+                categoryEl.appendChild(itemsGrid);
+                container.appendChild(categoryEl);
+            });
+        }
+        
+        function updateTotalDisplay() {
+            let totalRevenue = 0;
+            
+            Object.entries(salesData).forEach(([code, quantity]) => {
+                if (quantity > 0) {
+                    // Find the product
+                    let product = null;
+                    for (const category of Object.values(pesa21Products)) {
+                        product = category.find(p => p.code === code);
+                        if (product) break;
+                    }
+                    
+                    if (product) {
+                        const totals = calculateItemTotals(product, quantity);
+                        totalRevenue += totals.revenueShare;
+                    }
+                }
+            });
+            
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+        }
+        
+        // Action functions
+        function updateQuantity(productCode, change) {
+            if (!salesData[productCode]) {
+                salesData[productCode] = 0;
+            }
+            
+            salesData[productCode] = Math.max(0, salesData[productCode] + change);
+            
+            saveData();
+            renderProducts();
+            updateTotalDisplay();
+        }
+        
+        function searchProducts() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const allCards = document.querySelectorAll('.item-card');
+            const allCategories = document.querySelectorAll('.category');
+            
+            if (searchTerm === '') {
+                // Show all items and categories
+                allCards.forEach(card => {
+                    card.classList.remove('search-hidden', 'search-highlight');
+                });
+                allCategories.forEach(category => {
+                    category.classList.remove('search-hidden');
+                });
+                return;
+            }
+            
+            // Hide all categories first
+            allCategories.forEach(category => {
+                category.classList.add('search-hidden');
+            });
+            
+            allCards.forEach(card => {
+                const code = card.querySelector('.item-code').textContent.toLowerCase();
+                const title = card.querySelector('.item-title').textContent.toLowerCase();
+                
+                if (code.includes(searchTerm) || title.includes(searchTerm)) {
+                    card.classList.remove('search-hidden');
+                    card.classList.add('search-highlight');
+                    
+                    // Show the parent category
+                    let parent = card.parentNode;
+                    while (parent && !parent.classList.contains('category')) {
+                        parent = parent.parentNode;
+                    }
+                    if (parent) {
+                        parent.classList.remove('search-hidden');
+                    }
+                } else {
+                    card.classList.add('search-hidden');
+                    card.classList.remove('search-highlight');
+                }
+            });
+        }
+        
+        function clearAllSales() {
+            if (confirm('🗑️ Clear all sales data? This cannot be undone!')) {
+                salesData = {};
+                saveData();
+                renderProducts();
+                updateTotalDisplay();
+            }
+        }
+        
+        function saveCurrentState() {
+            saveData();
+            alert('✅ Data saved successfully!');
+        }
+        
+        function generateReport() {
+            const eventName = document.getElementById('eventName').value || 'Untitled Event';
+            const eventDate = document.getElementById('eventDate').value || new Date().toISOString().split('T')[0];
+            const eventLocation = document.getElementById('eventLocation').value || 'Location TBD';
+            
+            let totalRevenueShare = 0;
+            let hasAnySales = false;
+            
+            Object.entries(salesData).forEach(([code, quantity]) => {
+                if (quantity > 0) {
+                    hasAnySales = true;
+                    // Find the product
+                    let product = null;
+                    for (const category of Object.values(pesa21Products)) {
+                        product = category.find(p => p.code === code);
+                        if (product) break;
+                    }
+                    
+                    if (product) {
+                        const totals = calculateItemTotals(product, quantity);
+                        totalRevenueShare += totals.revenueShare;
+                    }
+                }
+            });
+            
+            if (!hasAnySales) {
+                alert('⚠️ No sales recorded yet!');
+                return;
+            }
+            
+            // Generate simple report
+            let tableRows = '';
+            
+            Object.values(pesa21Products).forEach(category => {
+                category.forEach(product => {
+                    const quantity = salesData[product.code] || 0;
+                    const price = getPrice(product);
+                    const cost = getCost(product);
+                    const totals = calculateItemTotals(product, quantity);
+                    
+                    tableRows += `
+                        <tr class="${quantity > 0 ? '' : 'no-sales'}">
+                            <td>${product.code}</td>
+                            <td>${product.name}</td>
+                            <td class="currency">${formatCurrency(price)}</td>
+                            <td class="currency">${quantity}</td>
+                            <td class="currency">${formatCurrency(totals.grossProfit)}</td>
+                            <td class="currency">${formatCurrency(cost)}</td>
+                            <td class="currency">${formatCurrency(totals.totalCost)}</td>
+                            <td class="currency">${formatCurrency(totals.netProfit)}</td>
+                            <td class="currency">${formatCurrency(totals.revenueShare)}</td>
+                        </tr>
+                    `;
+                });
+            });
+            
+            const reportHTML = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${eventName} - PESA21 Sales Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+                        .header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
+                        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                        th { background-color: #4a5568; color: white; padding: 12px; text-align: left; font-weight: bold; font-size: 11px; }
+                        td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: 12px; }
+                        tr:hover { background-color: #f7fafc; }
+                        .total-row { background-color: #edf2f7; font-weight: bold; }
+                        .currency { text-align: right; }
+                        .footer { margin-top: 20px; padding: 15px; background: #2d3748; color: white; border-radius: 8px; text-align: center; }
+                        .no-sales { opacity: 0.6; }
+                        .print-btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px; }
+                        @media print { .print-btn { display: none; } body { margin: 0; background: white; } }
+                    </style>
+                </head>
+                <body>
+                    <button class="print-btn" onclick="window.print()">🖨️ Print Report</button>
+                    
+                    <div class="header">
+                        <h1>📊 ${eventName} - PESA21 🎨</h1>
+                        <p>Event Date: ${eventDate}</p>
+                        <p>Location: ${eventLocation}</p>
+                        <p>Currency: ${currentCurrency === 'IDR' ? 'Indonesian Rupiah (Rp)' : 'Singapore Dollars (SGD)'}</p>
+                        <p>Revenue Share: 50%</p>
+                        <p>Generated: ${new Date().toLocaleString()}</p>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PRODUCT CODE</th>
+                                <th>ITEM NAME</th>
+                                <th>PRICE</th>
+                                <th>SALES</th>
+                                <th>GROSS PROFIT</th>
+                                <th>UNIT COST</th>
+                                <th>TOTAL COST</th>
+                                <th>NET PROFIT</th>
+                                <th>ARTIST SHARE<br>50%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="8" style="text-align: right; font-weight: bold;">Sub Total:</td>
+                                <td class="currency" style="font-weight: bold;">${formatCurrency(totalRevenueShare)}</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="8" style="text-align: right; font-weight: bold;">STATUS:</td>
+                                <td class="currency" style="font-weight: bold;">PROCESSING</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
+                    <div class="footer">
+                        <p><strong>Artist Revenue Share (50%):</strong> ${formatCurrency(totalRevenueShare)}</p>
+                        <p>Report generated by PESA21 EMERGENCY POS ✨</p>
+                        <p>Status: Ready for Payment Processing 💰</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            // Open report in new window
+            const reportWindow = window.open('', '_blank');
+            reportWindow.document.write(reportHTML);
+            reportWindow.document.close();
+        }
+        
+        // Data persistence
+        function saveData() {
+            try {
+                localStorage.setItem('pesa21_emergency_sales', JSON.stringify(salesData));
+                localStorage.setItem('pesa21_emergency_prices', JSON.stringify(customPrices));
+                localStorage.setItem('pesa21_emergency_costs', JSON.stringify(customCosts));
+                localStorage.setItem('pesa21_emergency_currency', currentCurrency);
+                
+                // Also save event details
+                const eventData = {
+                    name: document.getElementById('eventName').value,
+                    date: document.getElementById('eventDate').value,
+                    location: document.getElementById('eventLocation').value
+                };
+                localStorage.setItem('pesa21_emergency_event', JSON.stringify(eventData));
+            } catch (error) {
+                console.error('Error saving data:', error);
+                alert('❌ Error saving data: ' + error.message);
+            }
+        }
+        
+        function loadData() {
+            try {
+                // Load sales data
+                const savedSales = localStorage.getItem('pesa21_emergency_sales');
+                if (savedSales) {
+                    salesData = JSON.parse(savedSales);
+                }
+                
+                // Load custom prices and costs
+                const savedPrices = localStorage.getItem('pesa21_emergency_prices');
+                if (savedPrices) {
+                    customPrices = JSON.parse(savedPrices);
+                }
+                
+                const savedCosts = localStorage.getItem('pesa21_emergency_costs');
+                if (savedCosts) {
+                    customCosts = JSON.parse(savedCosts);
+                }
+                
+                // Load currency
+                const savedCurrency = localStorage.getItem('pesa21_emergency_currency');
+                if (savedCurrency) {
+                    currentCurrency = savedCurrency;
+                    document.querySelectorAll('.currency-btn').forEach(btn => {
+                        btn.classList.toggle('active', btn.textContent.includes(currentCurrency));
+                    });
+                }
+                
+                // Load event data
+                const savedEvent = localStorage.getItem('pesa21_emergency_event');
+                if (savedEvent) {
+                    const eventData = JSON.parse(savedEvent);
+                    document.getElementById('eventName').value = eventData.name || '';
+                    document.getElementById('eventDate').value = eventData.date || '';
+                    document.getElementById('eventLocation').value = eventData.location || '';
+                }
+                
+                // Try to load from main data as well
+                try {
+                    const mainData = localStorage.getItem('vpcomics_artist_manager_data');
+                    if (mainData) {
+                        const data = JSON.parse(mainData);
+                        
+                        // Add all PESA21 sales data from the main data
+                        if (data.salesData) {
+                            Object.entries(data.salesData).forEach(([key, value]) => {
+                                if (key.startsWith('pesa21_')) {
+                                    const productCode = key.replace('pesa21_', '');
+                                    salesData[productCode] = value;
+                                }
+                            });
+                        }
+                        
+                        // Add PESA21 custom prices from main data
+                        if (data.customPrices) {
+                            Object.entries(data.customPrices).forEach(([key, value]) => {
+                                if (key.startsWith('pesa21_')) {
+                                    const parts = key.split('_');
+                                    if (parts.length >= 3) {
+                                        const productCode = parts[1];
+                                        const currency = parts[2];
+                                        customPrices[`${productCode}_${currency}`] = value;
+                                    }
+                                }
+                            });
+                        }
+                        
+                        // Add PESA21 custom costs from main data
+                        if (data.customCosts) {
+                            Object.entries(data.customCosts).forEach(([key, value]) => {
+                                if (key.startsWith('pesa21_')) {
+                                    const parts = key.split('_');
+                                    if (parts.length >= 3) {
+                                        const productCode = parts[1];
+                                        const currency = parts[2];
+                                        customCosts[`${productCode}_${currency}`] = value;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.log('Could not import data from main application:', e);
+                }
+                
+                console.log('✅ Data loaded successfully');
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('⚠️ Error loading saved data. Starting with empty state.');
+            }
+        }
+    </script>
+</body>
+</html>

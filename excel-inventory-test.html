@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel-style Inventory Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f6fa;
+        }
+        .info-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .highlight {
+            background: #fffbdd;
+            padding: 15px;
+            border-left: 4px solid #ffd700;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-box">
+        <h1>✨ Excel-style Inventory Editing is Ready!</h1>
+        
+        <p>Your inventory system now works like Excel! Here's what's new:</p>
+        
+        <ul class="feature-list">
+            <li><span class="emoji">📝</span> <strong>Direct Cell Editing</strong> - Click any cell to edit directly, no more edit buttons!</li>
+            <li><span class="emoji">🎨</span> <strong>Artist Dropdown</strong> - Artists are now a dropdown with all your artists from the POS</li>
+            <li><span class="emoji">📍</span> <strong>Location Dropdowns</strong> - Each location is a dropdown, with quantity input next to it</li>
+            <li><span class="emoji">💾</span> <strong>Auto-Save</strong> - Changes save automatically when you click out or press Tab</li>
+            <li><span class="emoji">✅</span> <strong>Save Indicator</strong> - A green "✓ Saved" appears when changes are saved</li>
+            <li><span class="emoji">🔢</span> <strong>Multiple Locations</strong> - Each item can have multiple location/quantity pairs</li>
+            <li><span class="emoji">📊</span> <strong>Live Total</strong> - Total quantity updates instantly as you type</li>
+        </ul>
+        
+        <div class="highlight">
+            <strong>💡 Pro Tips:</strong>
+            <ul>
+                <li>Use Tab to navigate between cells</li>
+                <li>Empty location slots are automatically added for convenience</li>
+                <li>The import from POS feature is working - it fixed the artist data issue!</li>
+            </ul>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="inventory.html" class="button">🚀 Go to Inventory</a>
+            <a href="inventory-debug.html" class="button">🔧 Debug & Import Tool</a>
+        </div>
+    </div>
+</body>
+</html>

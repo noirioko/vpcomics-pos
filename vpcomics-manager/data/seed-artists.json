@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "key": "admin",
+    "name": "ADMIN",
+    "emoji": "⚙️",
+    "description": "Administrator Tools & Dashboard",
+    "revenueShare": 1.0,
+    "isSpecialTab": true,
+    "sortOrder": 0
+  },
+  {
+    "id": 2,
+    "key": "pesa21",
+    "name": "PESA 21",
+    "emoji": "🎨",
+    "description": "ORV master with prints & books",
+    "revenueShare": 0.5,
+    "isSpecialTab": false,
+    "sortOrder": 1
+  },
+  {
+    "id": 3,
+    "key": "gentlecat",
+    "name": "GENTLECAT",
+    "emoji": "🐱",
+    "description": "HSR & GI specialist with huge catalog",
+    "revenueShare": 1.0,
+    "isSpecialTab": false,
+    "sortOrder": 2
+  },
+  {
+    "id": 4,
+    "key": "limsera",
+    "name": "LIM SERA",
+    "emoji": "📚",
+    "description": "Books & doujinshi specialist (KISSPAGE11)",
+    "revenueShare": 1.0,
+    "isSpecialTab": false,
+    "sortOrder": 3
+  },
+  {
+    "id": 5,
+    "key": "discounted",
+    "name": "SALE ITEMS",
+    "emoji": "💸",
+    "description": "Clearance & discounted items",
+    "revenueShare": 1.0,
+    "isSpecialTab": false,
+    "sortOrder": 4
+  },
+  {
+    "id": 6,
+    "key": "blindbox",
+    "name": "BLIND BOX",
+    "emoji": "📦",
+    "description": "Collectible blind box figures",
+    "revenueShare": 1.0,
+    "isSpecialTab": false,
+    "sortOrder": 5
+  },
+  {
+    "id": 7,
+    "key": "erebun",
+    "name": "EREBUN",
+    "emoji": "🔮",
+    "description": "ORV & HSR special items",
+    "revenueShare": 1.0,
+    "isSpecialTab": false,
+    "sortOrder": 6
+  },
+  {
+    "id": 8,
+    "key": "bags",
+    "name": "BAGS & ACC",
+    "emoji": "👜",
+    "description": "Card sleeves & storage accessories",
+    "revenueShare": 1.0,
+    "isSpecialTab": false,
+    "sortOrder": 7
+  },
+  {
+    "id": 9,
+    "key": "kouwarra",
+    "name": "KOUWARRA",
+    "emoji": "🌸",
+    "description": "ORV omamori specialist",
+    "revenueShare": 1.0,
+    "isSpecialTab": false,
+    "sortOrder": 8
+  },
+  {
+    "id": 10,
+    "key": "krom",
+    "name": "KROM",
+    "emoji": "🍰",
+    "description": "ORV & GI dessert-themed items",
+    "revenueShare": 1.0,
+    "isSpecialTab": false,
+    "sortOrder": 9
+  },
+  {
+    "id": 11,
+    "key": "kisspage",
+    "name": "KISSPAGE",
+    "emoji": "📚",
+    "description": "Books & doujinshi specialist",
+    "revenueShare": 1.0,
+    "isSpecialTab": false,
+    "sortOrder": 10
+  }
+]

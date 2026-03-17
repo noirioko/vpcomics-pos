@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(del debug_test.html test_debug.html debug_tabs.html debug_artists.html test-import-fix.html)",
+      "Bash(wc:*)",
+      "Bash(cd \"D:/BUSINESS/VPCOMICS/VPCOMICS_ArtistManager/vpcomics-manager\" && npm install 2>&1)",
+      "Bash(cd \"D:/BUSINESS/VPCOMICS/VPCOMICS_ArtistManager/vpcomics-manager\" && npm run build 2>&1)",
+      "Bash(cp:*)",
+      "Bash(cd \"D:/BUSINESS/VPCOMICS/VPCOMICS_ArtistManager/vpcomics-manager\" && npm run dev 2>&1)",
+      "Bash(tail:*)",
+      "Bash(head:*)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Bash(echo:*)",
+      "Bash(cd \"D:/BUSINESS/VPCOMICS/VPCOMICS_ArtistManager/vpcomics-manager\" && npm run generate 2>&1)",
+      "Bash(ls:*)",
+      "Bash(cd \"D:/BUSINESS/VPCOMICS/VPCOMICS_ArtistManager/vpcomics-manager\" && npx nuxi typecheck 2>&1 | tail -30)",
+      "Bash(cd \"D:/BUSINESS/VPCOMICS/VPCOMICS_ArtistManager/vpcomics-manager\" && npm run dev 2>&1 | head -80)",
+      "Bash(cd \"D:/BUSINESS/VPCOMICS/VPCOMICS_ArtistManager/vpcomics-manager\" && timeout 20 npx nuxi dev 2>&1 | tail -40)",
+      "Bash(gh auth:*)",
+      "Bash(git --version && git config --global user.name && git config --global user.email)",
+      "Bash(git config:*)"
+    ]
+  }
+}
