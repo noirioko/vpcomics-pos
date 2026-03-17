@@ -1,5 +1,3 @@
 {
-  "buildCommand": "cd vpcomics-manager && npm ci && npm run generate",
-  "outputDirectory": "vpcomics-manager/.output/public",
-  "framework": null
+  "rootDirectory": "vpcomics-manager"
 }
